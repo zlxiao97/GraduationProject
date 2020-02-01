@@ -1,114 +1,170 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  tea: {
+    color: 'teal'
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  deepPink: {
+    color: 'deeppink'
   },
-  body: {
-    backgroundColor: Colors.white,
+  gray: {
+    color: 'gray'
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  white: {
+    color: 'white'
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+  container: {
+    flex: 1,
+    marginTop: 50
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  bigBox: {
+    width: 100,
+    height: 100
   },
-  highlight: {
-    fontWeight: '700',
+  smallBox: {
+    width: 50,
+    height: 50
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  largerBox: {
+    width: 150,
+    height: 150
   },
+  bgBlue: {
+    backgroundColor: 'powderblue'
+  },
+  bgSky: {
+    backgroundColor: 'skyblue'
+  },
+  bgSteelBlue: {
+    backgroundColor: 'steelblue'
+  },
+  bgred: {
+    backgroundColor: 'red'
+  },
+  flex: {
+    display: 'flex'
+  },
+  flexRow: {
+    flexDirection: 'row'
+  }, 
+  mainCenter: {
+    justifyContent: 'center'
+  },
+  crossCenter: {
+    alignItems: 'center'
+  },
+  spaceEvenly: {
+    justifyContent: 'space-evenly'
+  }, 
+  flex1: {
+    flex: 1
+  },
+  flex2: {
+    flex: 2
+  },
+  flex3: {
+    flex: 3
+  },
+  alignContent: {
+    alignContent: 'space-around'
+  },
+  middleSizeTextInput: {
+    height: 50,
+    borderWidth: 1
+  },
+  px30: {
+      paddingHorizontal: 30
+  },
+  buttonContainer: {
+    margin: 20
+  },
+  alternativeLayoutButtonContainer: {
+    margin: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  button: {
+    marginBottom: 30,
+    width: 260,
+    alignItems: 'center',
+    backgroundColor: '#2196F3'
+  },
+  buttonText: {
+    textAlign: 'center',
+    padding: 20,
+    color: 'white'
+  },
+  buttonBoxContainer: {
+    paddingTop: 40,
+    alignItems: 'center'
+  },
+  highHeight: {
+    height: 1000
+  },
+  normalHeight: {
+    height: 500,
+  },
+  fullWidth: {
+    width: '100%'
+  },
+  textItem: {
+    height: 66,
+    padding: 18,
+    fontSize: 20
+  },
+  sectionHeader: {
+    paddingBottom: 2,
+    paddingTop: 2,
+    paddingLeft: 10,
+    paddingRight: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(247,247,247,1)'
+  }
 });
 
-export default App;
+async function getAuthKey(){
+  let data = await fetch(`http://120.26.77.19:3000/key`,{
+    method: 'get'
+  });
+  let jsonData = await data.json();
+  return jsonData
+}
+
+export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading: true,
+      data: {}
+    };
+  }
+
+  componentDidMount(){
+    getAuthKey().then(data=>{
+      this.setState({
+        data: data,
+        isLoading: false
+      });
+    })
+    .catch(err =>{
+      console.log(err.message);
+    });
+  }
+
+  render() {
+    if(this.state.isLoading){
+      return <View style={styles.container}>
+        <ActivityIndicator/>
+      </View>
+    }else{
+      return (
+        <View style={[styles.container,styles.spaceEvenly]}>
+          <Text style={styles.textItem}>{this.state.data.accessToken}</Text>
+          <Text style={styles.textItem}>{this.state.data.sessionKey}</Text>
+        </View>
+      )
+    } 
+  }
+}
