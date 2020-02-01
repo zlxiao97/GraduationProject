@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const auth = require("./utils/auth.js");
-const PORT = 3000;
 var accessToken = '';
 var sessionKey = '';
 
@@ -23,6 +22,4 @@ app.get('/key',(req,res)=>{
     });
 });
 
-app.listen(PORT,()=>{
-    console.log(`listening at port ${PORT}`);
-});
+app.listen(3000);
