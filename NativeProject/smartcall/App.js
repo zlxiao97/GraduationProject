@@ -6,109 +6,104 @@
  * @flow
  */
 
-import React from 'react';
+import React,{Component} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
+  Platform,
+  NativeModules,
+  NativeEventEmitter,
+  Image,
+  Button
 } from 'react-native';
 
 import {
-  Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+const FaceView = NativeModules.PushFaceViewControllerModule;
+const FaceCheckHelper = Platform.select({
+  android: ()=> FaceView
+});
+const NativeModule  = new NativeEventEmitter(FaceCheckHelper);
+const configObj = {
+  // 'liveActionArray': [
+  //   0,//眨眨眼
+  //   1,//张张嘴
+  //   2,//向右摇头
+  //   3,//向左摇头
+  //   4,//抬头
+  //   5,//低头
+  //   6//摇头
+  // ],
+  // "order": true,
+  "sound": true
+}
+
+export default class App extends Component{
+
+  state = {
+    images: []
+  };
+
+  componentDidMount(){
+    NativeModule.addListener('FaceCheckHelper',(data)=>this.faceCheckCallback(data));
+  }
+
+  faceCheckCallback(data){
+    if(data.remindCode == 0){
+      let imgs = Object.keys(data.images).map((k,idx)=>{
+        return (
+          <View key={idx} style={styles.item}>
+            <Image
+              style={styles.image}
+              source={{uri: `data:image/jpg;base64,${data.images[k]}`}} />
+            <Text>{k}</Text>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+        );
+      });
+      this.setState({
+        images: imgs
+      });
+    }else if(data.remindCode == 36){
+      alert('采集超时！');
+    }else{
+      alert('采集失败！');
+    }
+  }
+
+  _onPressCollection(){
+    FaceView.faceDetectExp(configObj);
+  }
+
+  render(){
+      return (
+        <View style={[styles.body,styles.container,styles.centerM]}>
+          <Button onPress={this._onPressCollection.bind(this)} title="开始采集"></Button>
+          {this.state.images}
+        </View>
+      );
+  }
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
   body: {
     backgroundColor: Colors.white,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    marginTop: 60,
+    flex: 1
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+  item: {
+    margin: 50
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  image: {
+    width: 180,
+    height: 320,
+    backgroundColor: 'red'
   },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  centerM: {
+    justifyContent: 'center'
+  }
 });
-
-export default App;

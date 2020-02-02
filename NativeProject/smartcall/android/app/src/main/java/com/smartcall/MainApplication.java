@@ -6,12 +6,17 @@ import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.smartcall.baiduface.module.BaiduFacePackage;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Arrays;
 
 public class MainApplication extends Application implements ReactApplication {
-
+  private static MainApplication mainApplication;
+  private static final BaiduFacePackage baiduFacePackage = new BaiduFacePackage();
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
         @Override
@@ -21,11 +26,10 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          return packages;
+          return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
+            baiduFacePackage
+          );
         }
 
         @Override
@@ -42,8 +46,17 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    mainApplication = this;
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+  }
+
+  public static Application getApplication(){
+    return mainApplication;
+  }
+
+  public static BaiduFacePackage getBaiduFacePackage(){
+    return baiduFacePackage;
   }
 
   /**
