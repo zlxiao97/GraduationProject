@@ -164,57 +164,67 @@ public class BaiduFaceModule extends ReactContextBaseJavaModule implements Permi
         // SDK初始化已经设置完默认参数（推荐参数），您也根据实际需求进行数值调整
         if(faceConfigParams.hasKey("quality")) {
             ReadableMap qualityMap = faceConfigParams.getMap("quality");
+            //最小检测人脸(人脸能够被检测到的最小值 80-200)，越小越耗性能，默认200，推荐120-200
              if(qualityMap.hasKey("minFaceSize")) {
                  config.setMinFaceSize(qualityMap.getInt("minFaceSize"));
              } else {
                  config.setMinFaceSize(FaceEnvironment.VALUE_MIN_FACE_SIZE);
              }
+             //裁剪人脸大小，默认400
              if(qualityMap.hasKey("cropFaceSizeWidth")) {
                  config.setCropFaceValue(qualityMap.getInt("cropFaceSizeWidth"));
              } else {
                  config.setCropFaceValue(FaceEnvironment.VALUE_CROP_FACE_SIZE);
              }
+             //人脸遮挡范围（0-1），默认0.5，推荐小于0.5
              if(qualityMap.hasKey("occluThreshold")) {
                  config.setOcclusionValue((float)qualityMap.getDouble("occluThreshold"));
              } else {
                  config.setOcclusionValue(FaceEnvironment.VALUE_OCCLUSION);
              }
+            //光照范围，推荐大于40
             if(qualityMap.hasKey("illumThreshold")) {
                 config.setBrightnessValue(qualityMap.getInt("illumThreshold"));
             } else {
                 config.setBrightnessValue(FaceEnvironment.VALUE_BRIGHTNESS);
             }
-
+            //模糊度范围(0-1)，默认0.5，推荐小于0.7
             if(qualityMap.hasKey("blurThreshold")) {
                 config.setBlurnessValue((float)qualityMap.getDouble("blurThreshold"));
              } else {
                 config.setBlurnessValue(FaceEnvironment.VALUE_BLURNESS);
             }
+            //人脸三维Y轴角度范围(-45,45)，默认10，推荐-15-15
             if(qualityMap.hasKey("EulurAngleThrPitch")) {
                 config.setHeadPitchValue(qualityMap.getInt("EulurAngleThrPitch"));
              } else {
                 config.setHeadPitchValue(FaceEnvironment.VALUE_HEAD_PITCH);
             }
+            //人脸三维Z轴角度范围(-45,45)，默认10，推荐-15-15
             if(qualityMap.hasKey("EulurAngleThrYaw")) {
                 config.setHeadYawValue(qualityMap.getInt("EulurAngleThrYaw"));
             } else {
                 config.setHeadYawValue(FaceEnvironment.VALUE_HEAD_YAW);
             }
+            //人脸三维X轴角度范围(-45,45)，默认10，推荐-15-15
             if(qualityMap.hasKey("eulurAngleThrRoll")) {
                 config.setHeadRollValue(qualityMap.getInt("eulurAngleThrRoll"));
              } else {
                 config.setHeadRollValue(FaceEnvironment.VALUE_HEAD_ROLL);
             }
+            //是否进行质量检测
             if(qualityMap.hasKey("isCheckQuality")) {
                 config.setCheckFaceQuality(qualityMap.getBoolean("isCheckQuality"));
              } else {
                 config.setCheckFaceQuality(true);
             }
+            //人脸置信度范围（0-1），默认0.6
             if(qualityMap.hasKey("notFaceThreshold")) {
                 config.setNotFaceValue((float)qualityMap.getDouble("notFaceThreshold"));
              } else {
                 config.setNotFaceValue(FaceEnvironment.VALUE_NOT_FACE_THRESHOLD);
             }
+            //照片采集张数，默认1
             if(qualityMap.hasKey("maxCropImageNum")) {
                 config.setMaxCropImageNum(qualityMap.getInt("maxCropImageNum"));
             } else {

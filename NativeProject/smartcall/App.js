@@ -28,15 +28,20 @@ const FaceCheckHelper = Platform.select({
 });
 const NativeModule  = new NativeEventEmitter(FaceCheckHelper);
 const configObj = {
-  // 'liveActionArray': [
-  //   0,//眨眨眼
-  //   1,//张张嘴
-  //   2,//向右摇头
-  //   3,//向左摇头
-  //   4,//抬头
-  //   5,//低头
-  //   6//摇头
-  // ],
+  'quality': {
+    minFaceSize: 120,
+    blurThreshold: 0.7,
+    isCheckQuality: false
+  },
+  'liveActionArray': [
+    0,//眨眨眼
+    1,//张张嘴
+    // 2,//向右摇头
+    // 3,//向左摇头
+    // 4,//抬头
+    // 5,//低头
+    // 6//摇头
+  ],
   // "order": true,
   "sound": true
 }
@@ -74,7 +79,7 @@ export default class App extends Component{
   }
 
   _onPressCollection(){
-    FaceView.faceDetectExp(configObj);
+    FaceView.openPushFaceViewController(configObj);
   }
 
   render(){
