@@ -6,7 +6,7 @@ const sk = 'YKkDfv9dgxNq13GR0drAjRdokSsGfuGn';
 
 
 module.exports = function () {
-    const authParam = qs.stringify({
+    const param = qs.stringify({
         'grant_type': 'client_credentials',
         'client_id': ak,
         'client_secret': sk
@@ -15,7 +15,7 @@ module.exports = function () {
         https.get(
             {
                 hostname: hostname,
-                path: '/oauth/2.0/token?' + authParam,
+                path: '/oauth/2.0/token?' + param,
                 agent: false
             },
             function (res) {

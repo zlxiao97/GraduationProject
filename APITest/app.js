@@ -1,27 +1,19 @@
 const express = require("express");
 const path = require("path");
-const auth = require("./utils/auth.js");
+const bodyParser = require('body-parser');
 const PORT = 3000;
-var accessToken = '';
-var sessionKey = '';
+const KEY = require("./utils/init.js");
+const router = require("./router/index.js");
 
 const app = express();
+app.use(bodyParser.urlencoded({
+    extended:true,
+    limit: "10mb"
+}));
 
 app.use(express.static(path.join(__dirname,"public")));
+router(app,KEY);
 
-auth().then((data)=>{
-    sessionKey = data["session_key"];
-    accessToken = data["access_token"];
-}).catch((err)=>{
-    console.log('Error: '+err);
-});
-
-app.get('/key',(req,res)=>{
-    res.send({
-        accessToken,
-        sessionKey
-    });
-});
 
 app.listen(PORT,()=>{
     console.log(`listening at port ${PORT}`);

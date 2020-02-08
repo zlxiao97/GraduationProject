@@ -15,7 +15,8 @@ import {
   NativeModules,
   NativeEventEmitter,
   Image,
-  Button
+  Button,
+  FlatList
 } from 'react-native';
 
 import {
@@ -56,6 +57,18 @@ export default class App extends Component{
     NativeModule.addListener('FaceCheckHelper',(data)=>this.faceCheckCallback(data));
   }
 
+  /* 
+    Object.keys(data.images)
+      liveEye: 眨眼
+      liveMouth: 张嘴
+      yawLeft: 向左摇头
+      yawRight: 向右摇头
+      pitchUp: 抬头
+      pitchDown: 低头
+      liveYaw: 摇头
+      bestImage: 最佳识别
+  */
+
   faceCheckCallback(data){
     if(data.remindCode == 0){
       let imgs = Object.keys(data.images).map((k,idx)=>{
@@ -86,7 +99,7 @@ export default class App extends Component{
       return (
         <View style={[styles.body,styles.container,styles.centerM]}>
           <Button onPress={this._onPressCollection.bind(this)} title="开始采集"></Button>
-          {this.state.images}
+          <FlatList data={this.state.images} renderItem={({item})=>item}></FlatList>
         </View>
       );
   }
