@@ -85,8 +85,8 @@ export default class App extends Component{
         );
       });
       let bestImage = data.images["bestImage"];
-      regFace(bestImage,ImgType,'test1','user1',{name:'tadxiao'}).then(data=>{
-        ;
+      regFace(bestImage,ImgType,'test2','user1',{name:'tadxiao'}).then(data=>{
+        console.log(data);;
       }).catch(err=>{
         console.log(err);
       });

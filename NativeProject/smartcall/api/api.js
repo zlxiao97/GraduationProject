@@ -12,10 +12,10 @@ export async function regFace(image,image_type,group_id,user_id,user_info={}){
             image_type,
             group_id,
             user_id,
-            user_info
+            user_info: JSON.stringify(user_info)
         })
     };
     const data = await fetch(`${host}${path}`,init);
-    console.log(data);
-    return data;
+    const json = data.json();
+    return json;
 }
