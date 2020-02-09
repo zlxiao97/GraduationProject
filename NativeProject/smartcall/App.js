@@ -15,13 +15,20 @@ import {
   NativeModules,
   NativeEventEmitter,
   Image,
-  Button,
-  FlatList
+  TouchableHighlight,
+  FlatList,
+  TextInput
 } from 'react-native';
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import { regFace } from "./api/api.js";
+import { 
+  regFace,
+  searchByFace
+} from "./api/api.js";
+import {
+  validateName
+} from "./utils/validate.js"
 
 
 const FaceView = NativeModules.PushFaceViewControllerModule;
@@ -30,6 +37,7 @@ const FaceCheckHelper = Platform.select({
 });
 const NativeModule  = new NativeEventEmitter(FaceCheckHelper);
 const ImgType = 'BASE64';
+const Group = 'test9';
 const configObj = {
   'quality': {
     minFaceSize: 120,
@@ -53,7 +61,8 @@ export default class App extends Component{
 
   state = {
     images: [],
-    bestImage: ''
+    name: '',
+    mode: 0 //0：人脸采集模式，1: 人脸识别模式
   };
 
   componentDidMount(){
@@ -85,15 +94,9 @@ export default class App extends Component{
         );
       });
       let bestImage = data.images["bestImage"];
-      regFace(bestImage,ImgType,'test1','user1',{name:'tadxiao'}).then(data=>{
-        alert('人脸注册成功');
-        console.log(data);
-      }).catch(err=>{
-        console.log(err);
-      });
+      this._afterCollectImage(bestImage);
       this.setState({
-        images: imgs,
-        bestImage
+        images: imgs
       });
     }else if(data.remindCode == 36){
       alert('采集超时！');
@@ -102,15 +105,79 @@ export default class App extends Component{
     }
   }
 
+  _afterCollectImage(bestImage){
+    if(this.state.mode == 0){
+      regFace(bestImage,ImgType,Group,this.state.name,{name: this.state.name}).then(data=>{
+        if(data.error_code == 0){
+          alert('人脸注册成功');
+        }else{
+          alert('人脸注册失败');
+          console.log(data);
+        }
+      }).catch(err=>{
+        console.log(err);
+      });
+    }else if(this.state.mode == 1){
+      searchByFace(bestImage,ImgType,Group).then(data=>{
+        if(data.error_code == 0){
+          let recSuccess = false;
+          let faceList = data.result.user_list;
+          let successFaces = faceList.map(ele=>{
+            return {
+              ...ele,
+              user_info: JSON.parse(ele.user_info)
+            };
+          }).filter(ele=>{
+            return ele.score > 80 && ele.user_info.name == this.state.name;
+          });
+          recSuccess = successFaces.length > 0 ? true : false;
+          if(recSuccess){
+            alert(`Welcome ${successFaces[0].user_info.name}！`);
+          }else{
+            alert('没有识别出您的信息，请确认您的人脸已被采集');
+          }
+        }else{
+          alert('人脸识别失败');
+        }
+      }).catch(err=>{
+        console.log(err);
+      });
+    }
+  }
+
   _onPressCollection(){
-    FaceView.openPushFaceViewController(configObj);
+    if(this.state.name && validateName(this.state.name)){
+      this.setState({
+        mode: 0
+      });
+      FaceView.openPushFaceViewController(configObj);
+    }else{
+      alert(`请输入您的姓名（由字母、数字、下划线组成）`);
+    }
+  }
+
+  _onPressRecognize(){
+    if(this.state.name && validateName(this.state.name)){
+      this.setState({
+        mode: 1
+      });
+      FaceView.openPushFaceViewController(configObj);
+    }else{
+      alert(`请输入您的姓名（由字母、数字、下划线组成）`);
+    }
   }
 
   render(){
       return (
         <View style={[styles.body,styles.container,styles.centerM]}>
-          <Button onPress={this._onPressCollection.bind(this)} title="采集并注册人脸"></Button>
-          <FlatList data={this.state.images} renderItem={({item})=>item}></FlatList>
+          <TextInput style={[styles.input]} placeholder="请输入您的姓名：" value={this.state.name} onChangeText={(name) => this.setState({name})}></TextInput>
+          <TouchableHighlight onPress={this._onPressCollection.bind(this)}>
+            <Text style={styles.button}>人脸采集</Text>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this._onPressRecognize.bind(this)}>
+            <Text style={styles.button}>人脸识别</Text>
+          </TouchableHighlight>
+          <FlatList style={styles.flex5} data={this.state.images} renderItem={({item})=>item}></FlatList>
         </View>
       );
   }
@@ -134,5 +201,22 @@ const styles = StyleSheet.create({
   },
   centerM: {
     justifyContent: 'center'
+  },
+  input: {
+    height: 40,
+    marginVertical: 40,
+    marginHorizontal: 20,
+    borderWidth: 1,
+    borderColor: 'black'
+  },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginVertical: 10,
+    backgroundColor: 'teal',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center'
   }
 });
