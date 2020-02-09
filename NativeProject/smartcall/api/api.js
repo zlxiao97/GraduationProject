@@ -7,13 +7,13 @@ export async function regFace(image,image_type,group_id,user_id,user_info={}){
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            image,
+        body: {
+            // image,
             image_type,
             group_id,
             user_id,
-            user_info: user_info
-        })
+            user_info: JSON.stringify(user_info)
+        }
     };
     const data = await fetch(`${host}${path}`,init);
     const json = data.json();
