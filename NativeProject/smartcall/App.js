@@ -85,8 +85,9 @@ export default class App extends Component{
         );
       });
       let bestImage = data.images["bestImage"];
-      regFace(bestImage,ImgType,'test2','user1',{name:'tadxiao'}).then(data=>{
-        console.log(data);;
+      regFace(bestImage,ImgType,'test1','user1',{name:'tadxiao'}).then(data=>{
+        alert('人脸注册成功');
+        console.log(data);
       }).catch(err=>{
         console.log(err);
       });
@@ -108,7 +109,7 @@ export default class App extends Component{
   render(){
       return (
         <View style={[styles.body,styles.container,styles.centerM]}>
-          <Button onPress={this._onPressCollection.bind(this)} title="开始采集"></Button>
+          <Button onPress={this._onPressCollection.bind(this)} title="采集并注册人脸"></Button>
           <FlatList data={this.state.images} renderItem={({item})=>item}></FlatList>
         </View>
       );

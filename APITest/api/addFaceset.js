@@ -14,9 +14,8 @@ module.exports = function (req,key) {
             'Content-Type': 'application/json'
         }
     };
-    console.log(req.body);
     const body = JSON.stringify({
-        // 'image': req.body.image,
+        'image': req.body.image,
         'image_type': req.body['image_type'],
         'group_id': req.body['group_id'],
         'user_id': req.body['user_id'],
