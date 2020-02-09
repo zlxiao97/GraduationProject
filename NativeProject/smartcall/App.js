@@ -18,16 +18,18 @@ import {
   Button,
   FlatList
 } from 'react-native';
-
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
+import { regFace } from "./api/api.js";
+
 
 const FaceView = NativeModules.PushFaceViewControllerModule;
 const FaceCheckHelper = Platform.select({
   android: ()=> FaceView
 });
 const NativeModule  = new NativeEventEmitter(FaceCheckHelper);
+const ImgType = 'BASE64';
 const configObj = {
   'quality': {
     minFaceSize: 120,
@@ -50,7 +52,8 @@ const configObj = {
 export default class App extends Component{
 
   state = {
-    images: []
+    images: [],
+    bestImage: ''
   };
 
   componentDidMount(){
@@ -81,8 +84,15 @@ export default class App extends Component{
           </View>
         );
       });
+      let bestImage = data.images["bestImage"];
+      regFace(bestImage,ImgType,'test1','user1',{name:'tadxiao'}).then(data=>{
+        ;
+      }).catch(err=>{
+        console.log(err);
+      });
       this.setState({
-        images: imgs
+        images: imgs,
+        bestImage
       });
     }else if(data.remindCode == 36){
       alert('采集超时！');
