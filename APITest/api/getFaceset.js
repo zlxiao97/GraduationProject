@@ -15,8 +15,8 @@ module.exports = function (req,key) {
         }
     };
     const body = JSON.stringify({
-        'user_id': req.body.user_id,
-        'group_id': req.body.group_id,
+        'user_id': req.body['user_id'],
+        'group_id': req.body['group_id'],
     });
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {

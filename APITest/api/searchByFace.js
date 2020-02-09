@@ -16,8 +16,8 @@ module.exports = function (req,key) {
     };
     const body = JSON.stringify({
         'image': req.body.image,
-        'image_type': req.body.image_type,
-        'group_id_list': req.body.group_id
+        'image_type': req.body['image_type'],
+        'group_id_list': req.body['group_id']
     });
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {

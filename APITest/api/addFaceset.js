@@ -14,13 +14,13 @@ module.exports = function (req,key) {
             'Content-Type': 'application/json'
         }
     };
-    console.log(req.body);
+    console.log(req.body['user_id']);
     const body = JSON.stringify({
         'image': req.body.image,
-        'image_type': req.body.image_type,
-        'group_id': req.body.group_id,
-        'user_id': req.body.user_id,
-        'user_info': req.body.user_info
+        'image_type': req.body['image_type'],
+        'group_id': req.body['group_id'],
+        'user_id': req.body['user_id'],
+        'user_info': req.body['user_info']
     });
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
