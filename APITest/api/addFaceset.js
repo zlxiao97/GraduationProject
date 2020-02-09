@@ -14,7 +14,7 @@ module.exports = function (req,key) {
             'Content-Type': 'application/json'
         }
     };
-    console.log(Object.getOwnPropertyNames(req.body));
+    console.log(req.body['image_type']);
     const body = JSON.stringify({
         'image': req.body.image,
         'image_type': req.body['image_type'],
