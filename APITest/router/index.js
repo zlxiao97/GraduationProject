@@ -1,7 +1,20 @@
-const faceset = require("./faceset.js");
-const login = require("./login.js");
+const express = require("express");
+const router = express.Router();
+const tokens = require("../token/index");
+const manage = require("./manage/index.js");
+const student = require("./student/index.js");
 
-module.exports = function(app, key) {
-  app.use("/faceset", faceset(key));
-  app.use("/login", login());
+module.exports = function(key) {
+  router.use(tokens);
+  router.use(function(err, req, res, next) {
+    if (err.name === "UnauthorizedError") {
+      res.status(401).send({
+        code: 1,
+        message: "非法token"
+      });
+    }
+  });
+  router.use("/student", student(key));
+  router.use("/manage", manage());
+  return router;
 };
