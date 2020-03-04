@@ -10,7 +10,7 @@ module.exports = function(key) {
     if (err.name === "UnauthorizedError") {
       res.status(401).send({
         code: 1,
-        message: "非法token"
+        message: "您无权访问本系统"
       });
     }
   });

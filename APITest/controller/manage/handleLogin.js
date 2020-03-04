@@ -6,12 +6,10 @@ module.exports = (account, pwd) => {
   return new Promise((res, rej) => {
     read(-1, 10, { account_id: account }).then(data => {
       if (data.length > 0) {
-        const { account_pwd, account_type } = data[0];
+        const { account_pwd } = data[0];
         if (account_pwd === pwd) {
           const tokenObj = {
             account,
-            type: account_type,
-            typeName: account_type ? "课程负责人" : "超级管理员",
             system: "manage"
           };
           const account_token =
