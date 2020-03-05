@@ -1,17 +1,18 @@
-const handleGetAccount = require("../../controller/manage/account/handleGetAccount.js");
-const handlePostAccount = require("../../controller/manage/account/handlePostAccount");
-const handleDeleteAccount = require("../../controller/manage/account/handleDeleteAccount");
-const handlePutAccount = require("../../controller/manage/account/handlePutAccount");
+const handleGetCourse = require("../../controller/manage/course/handleGetCourse.js");
+const handlePostCourse = require("../../controller/manage/course/handlePostCourse.js");
+const handlePutCourse = require("../../controller/manage/course/handlePutCourse.js");
+const handleDeleteCourse = require("../../controller/manage/course/handleDeleteCourse.js");
+const uuid = require("../../utils/uuid.js");
 const express = require("express");
 const router = express.Router();
 
 module.exports = () => {
   router.get("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { current, pageSize } = req.query;
-        handleGetAccount(current, pageSize, account)
+        const { current, pageSize, account_id } = req.query;
+        handleGetCourse(current, pageSize, account_id)
           .then(respones => {
             res.send(respones);
           })
@@ -25,10 +26,11 @@ module.exports = () => {
   });
   router.post("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id, account_pwd, account_name } = req.body;
-        handlePostAccount(account_id, account_pwd, account_name, account)
+        const { account_id, course_name } = req.body;
+        const course_id = `course${uuid()}`;
+        handlePostCourse(course_id, account_id, course_name)
           .then(respones => {
             res.send(respones);
           })
@@ -42,10 +44,10 @@ module.exports = () => {
   });
   router.put("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id, account_pwd, account_name } = req.body;
-        handlePutAccount(account_id, account_pwd, account_name, account)
+        const { course_id, course_name } = req.body;
+        handlePutCourse(course_id, course_name)
           .then(respones => {
             res.send(respones);
           })
@@ -59,10 +61,10 @@ module.exports = () => {
   });
   router.delete("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id } = req.body;
-        handleDeleteAccount(account_id, account)
+        const { course_id } = req.body;
+        handleDeleteCourse(course_id)
           .then(respones => {
             res.send(respones);
           })

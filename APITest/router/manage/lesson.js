@@ -1,17 +1,17 @@
-const handleGetAccount = require("../../controller/manage/account/handleGetAccount.js");
-const handlePostAccount = require("../../controller/manage/account/handlePostAccount");
-const handleDeleteAccount = require("../../controller/manage/account/handleDeleteAccount");
-const handlePutAccount = require("../../controller/manage/account/handlePutAccount");
+const handleGetLesson = require("../../controller/manage/lesson/handleGetLesson.js");
+const handlePostLesson = require("../../controller/manage/lesson/handlePostLesson.js");
+const handlePutLesson = require("../../controller/manage/lesson/handlePutLesson.js");
+const handleDeleteLesson = require("../../controller/manage/lesson/handleDeleteLesson.js");
 const express = require("express");
 const router = express.Router();
 
 module.exports = () => {
   router.get("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { current, pageSize } = req.query;
-        handleGetAccount(current, pageSize, account)
+        const { current, pageSize, course_id } = req.query;
+        handleGetLesson(current, pageSize, course_id)
           .then(respones => {
             res.send(respones);
           })
@@ -25,10 +25,26 @@ module.exports = () => {
   });
   router.post("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id, account_pwd, account_name } = req.body;
-        handlePostAccount(account_id, account_pwd, account_name, account)
+        const {
+          course_id,
+          lesson_name,
+          start_time,
+          end_time,
+          lat,
+          lng,
+          range_radius
+        } = req.body;
+        handlePostLesson(
+          course_id,
+          lesson_name,
+          start_time,
+          end_time,
+          lat,
+          lng,
+          range_radius
+        )
           .then(respones => {
             res.send(respones);
           })
@@ -42,10 +58,26 @@ module.exports = () => {
   });
   router.put("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id, account_pwd, account_name } = req.body;
-        handlePutAccount(account_id, account_pwd, account_name, account)
+        const {
+          lesson_id,
+          lesson_name,
+          start_time,
+          end_time,
+          lat,
+          lng,
+          range_radius
+        } = req.body;
+        handlePutLesson(
+          lesson_id,
+          lesson_name,
+          start_time,
+          end_time,
+          lat,
+          lng,
+          range_radius
+        )
           .then(respones => {
             res.send(respones);
           })
@@ -59,10 +91,10 @@ module.exports = () => {
   });
   router.delete("/", function(req, res) {
     if (req.user) {
-      const { account, system } = req.user;
+      const { system } = req.user;
       if (system === "manage") {
-        const { account_id } = req.body;
-        handleDeleteAccount(account_id, account)
+        const { lesson_id } = req.body;
+        handleDeleteLesson(lesson_id)
           .then(respones => {
             res.send(respones);
           })

@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-03-03 20:45:19
- * @LastEditTime: 2020-03-03 21:02:08
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \SinotransUIOptimizationd:\project\vscode\GraduationProject\APITest\utils\uuid.js
- */
 module.exports = () => {
   var s = [];
   var hexDigits = "0123456789abcdef";
