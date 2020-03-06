@@ -4,6 +4,7 @@ const login = require("./login.js");
 const account = require("./account.js");
 const course = require("./course.js");
 const lesson = require("./lesson.js");
+const student = require("./student.js");
 const currentAccount = require("./currentAccount.js");
 
 module.exports = function() {
@@ -12,5 +13,6 @@ module.exports = function() {
   router.use("/account", account());
   router.use("/course", course());
   router.use("/lesson", lesson());
+  router.use("/student", student());
   return router;
 };
