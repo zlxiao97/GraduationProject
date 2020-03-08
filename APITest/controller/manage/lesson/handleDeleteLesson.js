@@ -6,7 +6,7 @@ module.exports = lesson_id => {
       lesson_id
     });
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "删除成功！" : "删除失败！"
     };
   })(lesson_id);

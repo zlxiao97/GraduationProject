@@ -9,7 +9,7 @@ module.exports = (account, system) => {
           canAddAccount: account_type === "0" ? true : false
         };
         res({
-          code: 0,
+          success: true,
           data: {
             account,
             role: account_type === "0" ? "超级管理员" : "课程负责人",
@@ -19,7 +19,7 @@ module.exports = (account, system) => {
           }
         });
       } else {
-        rej({ code: 1, message: "您无权访问该页面" });
+        rej({ success: false, message: "您无权访问该页面" });
       }
     });
   });

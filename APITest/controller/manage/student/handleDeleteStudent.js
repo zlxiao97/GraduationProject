@@ -6,7 +6,7 @@ module.exports = stu_id => {
       stu_id
     });
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "删除成功！" : "删除失败！"
     };
   })(stu_id);

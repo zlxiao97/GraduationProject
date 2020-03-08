@@ -17,12 +17,12 @@ module.exports = (account, pwd) => {
             jwt.sign(tokenObj, secretKey, {
               expiresIn: 60 * 60 * 24
             });
-          res({ code: 0, message: "登录成功！", token: account_token });
+          res({ success: true, message: "登录成功！", token: account_token });
         } else {
-          rej({ code: 1, message: "登录失败，请检查用户名或密码！" });
+          rej({ success: false, message: "登录失败，请检查用户名或密码！" });
         }
       } else {
-        rej({ code: 1, message: "登录失败，该账户未注册！" });
+        rej({ success: false, message: "登录失败，该账户未注册！" });
       }
     });
   });

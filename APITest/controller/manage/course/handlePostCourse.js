@@ -8,7 +8,7 @@ module.exports = (course_id, account_id, course_name) => {
       course_name
     });
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "创建成功！" : "创建失败！"
     };
   })(course_id, account_id, course_name);

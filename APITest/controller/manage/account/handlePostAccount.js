@@ -12,11 +12,11 @@ module.exports = (account_id, account_pwd, account_name, account) => {
         account_type: "1"
       });
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "创建成功！" : "创建失败！"
       };
     } else {
-      throw { code: 1, message: "您无权创建账号！" };
+      throw { success: false, message: "您无权创建账号！" };
     }
   })(account_id, account_pwd, account_name);
 };

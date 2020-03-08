@@ -1,19 +1,23 @@
-const { read } = require("../../../model/model.js")("student");
+const { read, getTotal } = require("../../../model/model.js")("student");
 
 module.exports = (current, pageSize, stu_code = "") => {
   if (stu_code !== "") {
     return (async (current, pageSize, stu_code) => {
       const data = await read(current, pageSize, { stu_code });
+      const total = await getTotal({ stu_code });
       return {
-        code: 0,
+        total,
+        success: true,
         data
       };
     })(current, pageSize, stu_code);
   } else {
     return (async (current, pageSize) => {
       const data = await read(current, pageSize);
+      const total = await getTotal();
       return {
-        code: 0,
+        total,
+        success: true,
         data
       };
     })(current, pageSize);

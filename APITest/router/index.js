@@ -9,7 +9,7 @@ module.exports = function(key) {
   router.use(function(err, req, res, next) {
     if (err.name === "UnauthorizedError") {
       res.status(401).send({
-        code: 1,
+        success: false,
         message: "您无权访问本系统"
       });
     }

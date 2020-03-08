@@ -11,11 +11,11 @@ module.exports = (stu_id, stu_img) => {
         }
       );
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "上传成功！" : "上传失败！"
       };
     })(stu_id, stu_img.filename);
   } else {
-    throw { code: 1, message: "图片上传失败！" };
+    throw { success: false, message: "图片上传失败！" };
   }
 };

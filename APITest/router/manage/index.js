@@ -5,6 +5,7 @@ const account = require("./account.js");
 const course = require("./course.js");
 const lesson = require("./lesson.js");
 const student = require("./student.js");
+const record = require("./record.js");
 const studentList = require("./studentList.js");
 const currentAccount = require("./currentAccount.js");
 
@@ -16,5 +17,7 @@ module.exports = function() {
   router.use("/lesson", lesson());
   router.use("/student", student());
   router.use("/studentlist", studentList());
+  router.use("/record", record());
+
   return router;
 };

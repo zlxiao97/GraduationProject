@@ -11,7 +11,7 @@ module.exports = (course_id, course_name) => {
       }
     );
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "编辑成功！" : "编辑失败！"
     };
   })(course_id, course_name);

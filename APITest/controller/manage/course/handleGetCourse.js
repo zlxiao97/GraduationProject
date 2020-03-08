@@ -1,10 +1,12 @@
-const { read } = require("../../../model/model.js")("course");
+const { read, getTotal } = require("../../../model/model.js")("course");
 
 module.exports = (current, pageSize, account_id) => {
   return (async (current, pageSize, account_id) => {
     const data = await read(current, pageSize, { account_id });
+    const total = await getTotal({ account_id });
     return {
-      code: 0,
+      total,
+      success: true,
       data
     };
   })(current, pageSize, account_id);

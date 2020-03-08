@@ -32,7 +32,7 @@ module.exports = (
       }
     );
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "编辑成功！" : "编辑失败！"
     };
   })(lesson_id, lesson_name, start_time, end_time, lat, lng, range_radius);

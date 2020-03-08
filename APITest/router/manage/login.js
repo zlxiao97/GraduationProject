@@ -15,7 +15,10 @@ module.exports = () => {
             res.send(err);
           });
       } else {
-        res.send({ code: 1, message: "登录失败，请输入合法的用户名和密码！" });
+        res.send({
+          success: false,
+          message: "登录失败，请输入合法的用户名和密码！"
+        });
       }
     }
   });

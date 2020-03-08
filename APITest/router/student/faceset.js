@@ -17,10 +17,10 @@ module.exports = key => {
             res.send(JSON.stringify(err));
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     } else {
-      res.send({ code: 1, message: "请求失败" });
+      res.send({ success: false, message: "请求失败" });
     }
   });
   router.post("/get", function(req, res) {
@@ -34,10 +34,10 @@ module.exports = key => {
             res.send(JSON.stringify(err));
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     } else {
-      res.send({ code: 1, message: "请求失败" });
+      res.send({ success: false, message: "请求失败" });
     }
   });
   router.post("/delete", function(req, res) {
@@ -51,10 +51,10 @@ module.exports = key => {
             res.send(JSON.stringify(err));
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     } else {
-      res.send({ code: 1, message: "请求失败" });
+      res.send({ success: false, message: "请求失败" });
     }
   });
   router.post("/search", function(req, res) {
@@ -68,10 +68,10 @@ module.exports = key => {
             res.send(JSON.stringify(err));
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     } else {
-      res.send({ code: 1, message: "请求失败" });
+      res.send({ success: false, message: "请求失败" });
     }
   });
   return router;

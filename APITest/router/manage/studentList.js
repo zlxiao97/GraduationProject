@@ -15,10 +15,10 @@ module.exports = () => {
             res.send(respones);
           })
           .catch(err => {
-            res.send({ code: 1, message: err.message });
+            res.send({ success: false, message: err.message });
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     }
   });
@@ -32,10 +32,10 @@ module.exports = () => {
             res.send(respones);
           })
           .catch(err => {
-            res.send({ code: 1, message: err.message });
+            res.send({ success: false, message: err.message });
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     }
   });
@@ -49,10 +49,10 @@ module.exports = () => {
             res.send(respones);
           })
           .catch(err => {
-            res.send({ code: 1, message: err.message });
+            res.send({ success: false, message: err.message });
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     }
   });

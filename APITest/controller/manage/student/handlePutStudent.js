@@ -12,7 +12,7 @@ module.exports = (stu_id, stu_code, stu_name, stu_pwd) => {
       }
     );
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "编辑成功！" : "编辑失败！"
     };
   })(stu_id, stu_code, stu_name, stu_pwd);

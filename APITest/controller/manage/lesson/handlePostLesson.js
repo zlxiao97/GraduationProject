@@ -31,7 +31,7 @@ module.exports = (
       range_radius
     });
     return {
-      code: 0,
+      success: true,
       message: affectedRows > 0 ? "创建成功！" : "创建失败！"
     };
   })(course_id, lesson_name, start_time, end_time, lat, lng, range_radius);

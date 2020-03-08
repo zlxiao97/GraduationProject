@@ -1,4 +1,4 @@
-const { read } = require("../../../model/model.js")("account");
+const { read, getTotal } = require("../../../model/model.js")("account");
 
 module.exports = (current, pageSize, account) => {
   return (async (current, pageSize) => {
@@ -6,12 +6,14 @@ module.exports = (current, pageSize, account) => {
     const { account_type } = users[0];
     if (account_type === "0") {
       const data = await read(current, pageSize);
+      const total = await getTotal();
       return {
-        code: 0,
+        total,
+        success: true,
         data
       };
     } else {
-      return { code: 0, data: [] };
+      return { total: 0, success: true, data: [] };
     }
   })(current, pageSize);
 };

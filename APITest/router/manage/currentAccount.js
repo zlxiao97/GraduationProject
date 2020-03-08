@@ -15,7 +15,7 @@ module.exports = () => {
             res.send(err);
           });
       } else {
-        res.send({ code: 1, message: "您无权访问本系统" });
+        res.send({ success: false, message: "您无权访问本系统" });
       }
     }
   });

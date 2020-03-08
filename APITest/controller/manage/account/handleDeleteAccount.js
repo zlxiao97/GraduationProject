@@ -7,11 +7,11 @@ module.exports = (account_id, account) => {
     if (account_type === "0") {
       const { affectedRows } = await Delete({ account_id });
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "删除成功" : "删除失败"
       };
     } else {
-      throw { code: 1, message: "您无权删除账号" };
+      throw { success: false, message: "您无权删除账号" };
     }
   })(account_id);
 };

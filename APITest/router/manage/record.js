@@ -1,8 +1,6 @@
-const handleGetCourse = require("../../controller/manage/course/handleGetCourse.js");
-const handlePostCourse = require("../../controller/manage/course/handlePostCourse.js");
-const handlePutCourse = require("../../controller/manage/course/handlePutCourse.js");
-const handleDeleteCourse = require("../../controller/manage/course/handleDeleteCourse.js");
-const uuid = require("../../utils/uuid.js");
+const handleGetRecord = require("../../controller/manage/record/handleGetRecord.js");
+const handlePutRecord = require("../../controller/manage/record/handlePutRecord.js");
+const handleGetRecordRate = require("../../controller/manage/record/handleGetRecordRate.js");
 const express = require("express");
 const router = express.Router();
 
@@ -11,8 +9,16 @@ module.exports = () => {
     if (req.user) {
       const { system } = req.user;
       if (system === "manage") {
-        const { current, pageSize, account_id } = req.query;
-        handleGetCourse(current, pageSize, account_id)
+        let {
+          current,
+          pageSize,
+          course_name,
+          lesson_name,
+          stu_code
+        } = req.query;
+        lesson_name = lesson_name || "";
+        stu_code = stu_code || "";
+        handleGetRecord(current, pageSize, course_name, lesson_name, stu_code)
           .then(respones => {
             res.send(respones);
           })
@@ -24,13 +30,12 @@ module.exports = () => {
       }
     }
   });
-  router.post("/", function(req, res) {
+  router.get("/rate", function(req, res) {
     if (req.user) {
       const { system } = req.user;
       if (system === "manage") {
-        const { account_id, course_name } = req.body;
-        const course_id = `course${uuid()}`;
-        handlePostCourse(course_id, account_id, course_name)
+        let { course_name } = req.query;
+        handleGetRecordRate(course_name)
           .then(respones => {
             res.send(respones);
           })
@@ -46,25 +51,8 @@ module.exports = () => {
     if (req.user) {
       const { system } = req.user;
       if (system === "manage") {
-        const { course_id, course_name } = req.body;
-        handlePutCourse(course_id, course_name)
-          .then(respones => {
-            res.send(respones);
-          })
-          .catch(err => {
-            res.send({ success: false, message: err.message });
-          });
-      } else {
-        res.send({ success: false, message: "您无权访问本系统" });
-      }
-    }
-  });
-  router.delete("/", function(req, res) {
-    if (req.user) {
-      const { system } = req.user;
-      if (system === "manage") {
-        const { course_id } = req.body;
-        handleDeleteCourse(course_id)
+        let { attendance_id, attendance_status } = req.body;
+        handlePutRecord(attendance_id, attendance_status)
           .then(respones => {
             res.send(respones);
           })

@@ -14,7 +14,7 @@ module.exports = (current, pageSize, course_id) => {
       })
     );
     return {
-      code: 0,
+      success: true,
       data
     };
   })(current, pageSize, course_id);

@@ -2,6 +2,7 @@ const generateSelectSQL = require("../utils/generateSelectSQL.js");
 const generateInsertSQL = require("../utils/generateInsertSQL.js");
 const generateUpdateSQL = require("../utils/generateUpdateSQL.js");
 const generateDeleteSQL = require("../utils/generateDeleteSQL.js");
+const generateCountSQL = require("../utils/generateCountSQL.js");
 const connection = require("./connect.js")();
 
 module.exports = TABLE_NAME => ({
@@ -45,6 +46,16 @@ module.exports = TABLE_NAME => ({
 
   delete(condition) {
     const SQL = generateDeleteSQL(TABLE_NAME, condition);
+    return new Promise((res, rej) => {
+      connection.query(SQL, function(error, results) {
+        if (error) rej(error);
+        res(results);
+      });
+    });
+  },
+
+  getTotal(condition) {
+    const SQL = generateCountSQL(TABLE_NAME, condition);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);

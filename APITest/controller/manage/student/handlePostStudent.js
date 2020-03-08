@@ -13,7 +13,7 @@ module.exports = (stu_code, stu_pwd, stu_name, stu_img = "") => {
         stu_img
       });
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "创建成功！" : "创建失败！"
       };
     })(stu_code, stu_pwd, stu_name, stu_img.filename);
@@ -27,7 +27,7 @@ module.exports = (stu_code, stu_pwd, stu_name, stu_img = "") => {
         stu_name
       });
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "创建成功！" : "创建失败！"
       };
     })(stu_code, stu_pwd, stu_name);

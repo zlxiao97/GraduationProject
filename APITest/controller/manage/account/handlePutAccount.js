@@ -15,11 +15,11 @@ module.exports = (account_id, account_pwd, account_name, account) => {
         }
       );
       return {
-        code: 0,
+        success: true,
         message: affectedRows > 0 ? "编辑成功！" : "编辑失败！"
       };
     } else {
-      throw { code: 1, message: "您无权编辑账号！" };
+      throw { success: false, message: "您无权编辑账号！" };
     }
   })(account_id, account_pwd, account_name);
 };
