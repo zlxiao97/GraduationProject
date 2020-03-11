@@ -10,7 +10,12 @@ module.exports = (stu_code, stu_pwd, stu_name, stu_img = "") => {
         stu_code,
         stu_pwd,
         stu_name,
-        stu_img
+        stu_img,
+        stu_phoneno: "",
+        stu_school: "",
+        stu_avatar: "",
+        remind_time: "5",
+        stu_face_isreg: 0
       });
       return {
         success: true,
@@ -24,7 +29,13 @@ module.exports = (stu_code, stu_pwd, stu_name, stu_img = "") => {
         stu_id,
         stu_code,
         stu_pwd,
-        stu_name
+        stu_name,
+        stu_img: "",
+        stu_phoneno: "",
+        stu_school: "",
+        stu_avatar: "",
+        remind_time: "5",
+        stu_face_isreg: 1
       });
       return {
         success: true,
