@@ -4,6 +4,7 @@ const add = require("../../api/addFaceset.js");
 const get = require("../../api/getFaceset.js");
 const del = require("../../api/deleteFace.js");
 const search = require("../../api/searchByFace.js");
+const match = require("../../api/match.js");
 
 module.exports = key => {
   router.post("/add", function(req, res) {
@@ -66,6 +67,23 @@ module.exports = key => {
           })
           .catch(err => {
             res.send(JSON.stringify(err));
+          });
+      } else {
+        res.send({ success: false, message: "您无权访问本系统" });
+      }
+    } else {
+      res.send({ success: false, message: "请求失败" });
+    }
+  });
+  router.post("/match", function(req, res) {
+    if (req.user) {
+      if (req.user.system === "student") {
+        match(req, key)
+          .then(data => {
+            res.send({ success: true, data });
+          })
+          .catch(err => {
+            res.send({ success: false, data: err });
           });
       } else {
         res.send({ success: false, message: "您无权访问本系统" });

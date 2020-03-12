@@ -8,6 +8,7 @@ const updateStuInfo = require("./updateStuInfo.js");
 const lesson = require("./lesson.js");
 const record = require("./record.js");
 const setting = require("./setting.js");
+const face = require("./face.js");
 
 module.exports = function(key) {
   router.use("/faceset", faceset(key));
@@ -18,5 +19,7 @@ module.exports = function(key) {
   router.use("/lesson", lesson());
   router.use("/record", record());
   router.use("/setting", setting());
+  router.use("/face", face());
+
   return router;
 };
