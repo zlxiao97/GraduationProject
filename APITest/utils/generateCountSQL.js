@@ -4,7 +4,7 @@ module.exports = (table, condition = {}) => {
     " "
   )}`;
   conditionSQL = conditionSQL.substring(0, conditionSQL.length - 5);
-  `select COUNT(*) from ${table} ${
+  return `select COUNT(*) from ${table} ${
     Object.keys(condition).length ? "where" : ""
   } ${conditionSQL};`;
 };

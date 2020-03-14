@@ -16,6 +16,7 @@ module.exports = TABLE_NAME => ({
    */
   read(current, pageSize, condition) {
     const SQL = generateSelectSQL(TABLE_NAME, current, pageSize, condition);
+    console.log(SQL);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);
@@ -26,6 +27,7 @@ module.exports = TABLE_NAME => ({
 
   create(obj) {
     const SQL = generateInsertSQL(TABLE_NAME, obj);
+    console.log(SQL);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);
@@ -36,6 +38,7 @@ module.exports = TABLE_NAME => ({
 
   update(obj, condition) {
     const SQL = generateUpdateSQL(TABLE_NAME, obj, condition);
+    console.log(SQL);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);
@@ -46,6 +49,7 @@ module.exports = TABLE_NAME => ({
 
   delete(condition) {
     const SQL = generateDeleteSQL(TABLE_NAME, condition);
+    console.log(SQL);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);
@@ -56,10 +60,17 @@ module.exports = TABLE_NAME => ({
 
   getTotal(condition) {
     const SQL = generateCountSQL(TABLE_NAME, condition);
+    console.log(SQL);
     return new Promise((res, rej) => {
       connection.query(SQL, function(error, results) {
         if (error) rej(error);
-        res(results);
+        const totals = results;
+        if (totals && totals.length > 0) {
+          const total = totals[0]["COUNT(*)"];
+          res(total);
+        } else {
+          rej({ message: "获取总条数失败" });
+        }
       });
     });
   }
