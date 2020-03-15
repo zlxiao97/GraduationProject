@@ -2,6 +2,8 @@ const handleGetCourse = require("../../controller/manage/course/handleGetCourse.
 const handlePostCourse = require("../../controller/manage/course/handlePostCourse.js");
 const handlePutCourse = require("../../controller/manage/course/handlePutCourse.js");
 const handleDeleteCourse = require("../../controller/manage/course/handleDeleteCourse.js");
+const handleGetLessonByCourse = require("../../controller/manage/course/handleGetLessonByCourse.js");
+
 const uuid = require("../../utils/uuid.js");
 const express = require("express");
 const router = express.Router();
@@ -65,6 +67,24 @@ module.exports = () => {
       if (system === "manage") {
         const { course_id } = req.body;
         handleDeleteCourse(course_id)
+          .then(respones => {
+            res.send(respones);
+          })
+          .catch(err => {
+            res.send({ success: false, message: err.message });
+          });
+      } else {
+        res.send({ success: false, message: "您无权访问本系统" });
+      }
+    }
+  });
+
+  router.get("/lesson", function(req, res) {
+    if (req.user) {
+      const { system } = req.user;
+      if (system === "manage") {
+        const { course_id } = req.query;
+        handleGetLessonByCourse(course_id)
           .then(respones => {
             res.send(respones);
           })

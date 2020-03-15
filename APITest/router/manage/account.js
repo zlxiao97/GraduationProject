@@ -2,6 +2,7 @@ const handleGetAccount = require("../../controller/manage/account/handleGetAccou
 const handlePostAccount = require("../../controller/manage/account/handlePostAccount");
 const handleDeleteAccount = require("../../controller/manage/account/handleDeleteAccount");
 const handlePutAccount = require("../../controller/manage/account/handlePutAccount");
+const handleGetCourseByAccount = require("../../controller/manage/account/handleGetCourseByAccount.js");
 const express = require("express");
 const router = express.Router();
 
@@ -63,6 +64,22 @@ module.exports = () => {
       if (system === "manage") {
         const { account_id } = req.body;
         handleDeleteAccount(account_id, account)
+          .then(respones => {
+            res.send(respones);
+          })
+          .catch(err => {
+            res.send({ success: false, message: err.message });
+          });
+      } else {
+        res.send({ success: false, message: "您无权访问本系统" });
+      }
+    }
+  });
+  router.get("/courses", function(req, res) {
+    if (req.user) {
+      const { account, system } = req.user;
+      if (system === "manage") {
+        handleGetCourseByAccount(account)
           .then(respones => {
             res.send(respones);
           })

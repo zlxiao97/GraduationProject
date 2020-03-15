@@ -114,23 +114,91 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/attendance/listtablelist',
+              redirect: '/attendance/attendanceap',
             },
             {
               name: 'attendance',
               path: '/attendance',
-              icon: 'AppstoreOutlined',
-              authority: ['super', 'admin'],
+              icon: 'TeamOutlined',
+              authority: ['super', 'admin', 'user'],
               routes: [
                 {
-                  name: 'listtablelist',
-                  path: '/attendance/listtablelist',
-                  component: './ListTableList',
+                  name: 'AttendanceAp',
+                  path: '/attendance/attendanceap',
+                  component: './Attendance/AttendanceAp',
                 },
                 {
-                  name: 'table',
-                  path: '/attendance/table',
-                  component: './Table',
+                  name: 'AttendanceSt',
+                  path: '/attendance/attendancest',
+                  component: './Attendance/AttendanceSt',
+                },
+              ],
+            },
+            {
+              name: 'classManage',
+              path: '/classmanage',
+              icon: 'ProfileOutlined',
+              authority: ['super', 'admin', 'user'],
+              routes: [
+                {
+                  name: 'classList',
+                  path: '/classmanage/classlist',
+                  component: './ClassManage/ClassList',
+                },
+                {
+                  name: 'studentList',
+                  path: '/classmanage/studentlist',
+                  component: './ClassManage/StudentList',
+                },
+                {
+                  name: 'attendanceRule',
+                  path: '/classmanage/attendancerule',
+                  component: './ClassManage/AttendanceRule',
+                },
+              ],
+            },
+            {
+              name: 'account',
+              path: '/account',
+              icon: 'UserOutlined',
+              authority: ['super', 'admin', 'user'],
+              routes: [
+                {
+                  name: 'studentManage',
+                  path: '/account/studentmanage',
+                  component: './Account/StudentManage',
+                },
+                {
+                  name: 'accountManage',
+                  path: '/account/accountmanage',
+                  component: './Account/AccountManage',
+                  authority: ['super', 'admin'],
+                },
+              ],
+            },
+            {
+              name: 'exception',
+              icon: 'warning',
+              path: '/exception',
+              hideInMenu: true,
+              routes: [
+                {
+                  name: '403',
+                  icon: 'smile',
+                  path: '/exception/403',
+                  component: './exception/403',
+                },
+                {
+                  name: '404',
+                  icon: 'smile',
+                  path: '/exception/404',
+                  component: './exception/404',
+                },
+                {
+                  name: '500',
+                  icon: 'smile',
+                  path: '/exception/500',
+                  component: './exception/500',
                 },
               ],
             },

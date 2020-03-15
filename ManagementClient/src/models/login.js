@@ -50,7 +50,7 @@ const Model = {
               return;
             }
           } else {
-            redirect = '/attendance/listtablelist';
+            redirect = '/attendance/attendanceap';
           }
           router.replace(redirect || '/');
         }

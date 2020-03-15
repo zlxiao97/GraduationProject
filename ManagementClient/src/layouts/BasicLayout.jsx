@@ -12,7 +12,7 @@ import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
+import logo from '../assets/codeception.svg';
 const noMatch = (
   <Result
     status="403"
@@ -115,7 +115,12 @@ const BasicLayout = props => {
     <ProLayout
       logo={logo}
       formatMessage={formatMessage}
-      menuHeaderRender={logoDom => <Link to="#">{logoDom}</Link>}
+      menuHeaderRender={(logoDom, titleDom) => (
+        <Link to="/">
+          {logoDom}
+          {titleDom}
+        </Link>
+      )}
       onCollapse={handleMenuCollapse}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {

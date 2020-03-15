@@ -132,7 +132,7 @@ const TableList = () => {
     </div>
   );
   return (
-    <PageHeaderWrapper content={headerContent} title={false}>
+    <PageHeaderWrapper content={headerContent}>
       <div className="pageHeaderWrapper-fix-ahead-panel">
         <Button
           type="primary"

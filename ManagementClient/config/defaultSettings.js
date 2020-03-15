@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'Smart Call Management',
+  title: 'SCMS',
   pwa: false,
   iconfontUrl: '',
 };
