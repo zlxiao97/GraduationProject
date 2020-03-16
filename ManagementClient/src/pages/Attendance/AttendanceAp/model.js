@@ -1,37 +1,32 @@
-import { queryIvtList } from './service';
-
-//获取下拉列表库存编号的默认参数
-const defaultParams = {
-    pageindex: 0,
-    pagesize: 100,
-};
+import { queryCourses } from './service';
 
 const Model = {
-  namespace: 'ivtlist',
+  namespace: 'curcourse',
   state: {
-    ivtList: [],
+    curCourse: [],
   },
   reducers: {
-    getIvtList(state, { payload }) {
-      return { ...state, ivtList: payload };
+    getCurCourse(state, { payload }) {
+      return { ...state, curCourse: payload };
     },
   },
   effects: {
-    *fetchIvtList({ payload }, { call, put }) {
-      const response = yield call(queryIvtList, payload);
+    *fetchCurCourse({ payload }, { call, put }) {
+      const response = yield call(queryCourses, payload);
+      const { data, success } = response;
       yield put({
-        type: 'getIvtList',
-        payload: response,
+        type: 'getCurCourse',
+        payload: success ? data : [],
       });
     },
   },
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        if (pathname === '/cargo/cargolistivt') {
+        if (pathname === '/attendance/attendanceap') {
           dispatch({
-            type: 'fetchIvtList',
-            payload: defaultParams,
+            type: 'fetchCurCourse',
+            payload: '',
           });
         }
       });

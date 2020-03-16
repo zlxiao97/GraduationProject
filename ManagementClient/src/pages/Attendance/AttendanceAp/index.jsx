@@ -2,6 +2,7 @@ import { Button, Divider, message, Select, Input, Typography } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import { connect } from 'dva';
 import CreateForm from './components/CreateForm';
 import data2ExcelJson from '@/utils/excel/data2ExcelJson';
 import exportJson2Sheet from '@/utils/excel/exportJson2Sheet';
@@ -76,7 +77,7 @@ const handleRemove = async selectedRows => {
   }
 };
 
-const TableList = () => {
+const TableList = ({ curCourse }) => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [datasource, setDatasource] = useState(null);
@@ -89,9 +90,11 @@ const TableList = () => {
     <div className="headerContent-wrapper">
       <Text>课程名称：</Text>
       <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择课程">
-        <Option value="test" key="1">
-          test
-        </Option>
+        {curCourse.map(({ course_id, course_name }) => (
+          <Option value={course_id} key={course_id}>
+            {course_name}
+          </Option>
+        ))}
       </Select>
       <Text>功课名称：</Text>
       <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择功课">
@@ -232,4 +235,6 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default connect(({ curcourse: { curCourse } }) => ({
+  curCourse,
+}))(TableList);
