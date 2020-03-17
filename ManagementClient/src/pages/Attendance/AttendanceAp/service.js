@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { genAsyncSearch } from '@/utils/search/searchInCurPage';
 
-async function queryRule2({ current, pageSize, course_name = '', lesson_name = '' }) {
+async function queryRule2({ current, pageSize, course_name, lesson_name }) {
   return request('/api/manage/record', {
     params: {
       current,

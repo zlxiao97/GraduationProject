@@ -37,6 +37,7 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
+    className="dc-responsive-footer"
     copyright="2010 重庆邮电大学 软件工程学院"
     links={[
       {
@@ -114,6 +115,7 @@ const BasicLayout = props => {
   return (
     <ProLayout
       logo={logo}
+      className="dc-layout"
       formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">

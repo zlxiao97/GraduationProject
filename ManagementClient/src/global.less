@@ -92,3 +92,18 @@ ol {
   padding-left: 16px;
   line-height: 64px;
 }
+
+// 响应式版权位置展示
+:global(.dc-responsive-footer) {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+:global(.dc-layout) {
+  & > section.ant-layout {
+    & > section.ant-layout {
+      padding-bottom: 200px;
+    }
+  }
+}
