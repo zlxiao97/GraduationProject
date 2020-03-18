@@ -10,7 +10,7 @@ module.exports = (current, pageSize, course_id) => {
       relations.map(async item => {
         const { stu_id } = item;
         const students = await readStudent(-1, 10, { stu_id });
-        return students[0];
+        return { ...students[0], ...item };
       })
     );
     return {

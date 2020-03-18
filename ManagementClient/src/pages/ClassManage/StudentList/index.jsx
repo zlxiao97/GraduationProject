@@ -2,11 +2,12 @@ import { Button, Divider, message, Select, Input, Typography } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import { connect } from 'dva';
 import CreateForm from './components/CreateForm';
 import data2ExcelJson from '@/utils/excel/data2ExcelJson';
 import exportJson2Sheet from '@/utils/excel/exportJson2Sheet';
 import { columns } from './config/col-config-list';
-import { queryRule, updateRule, removeRule, add } from './service';
+import { queryRule, queryStudents, remove, add } from './service';
 const { Option } = Select;
 const { Text } = Typography;
 const { Search } = Input;
@@ -16,55 +17,39 @@ let localAction = null;
  * 添加节点
  * @param fields
  */
-const handleAdd = async fields => {
+const handleAdd = async (stu_ids, course_id) => {
   const hide = message.loading('正在新增');
-  const res = await add({
-    username: fields.username,
-    account_pwd: fields.account_pwd,
-    account_name: fields.account_name,
-  });
+  const results = [];
+  try {
+    for (let i = 0; i < stu_ids.length; i++) {
+      const res = await add({
+        stu_id: stu_ids[i],
+        course_id,
+      });
+      results.push(res);
+    }
+  } catch (e) {
+    return false;
+  }
   hide();
-  if (res && !res.success) {
+  const { length: success } = results.filter(({ success }) => !success);
+  if (!success) {
     return false;
   }
   message.success('新增成功');
   return true;
 };
-/**
- * 更新节点
- * @param fields
- */
 
-const handleUpdate = async fields => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
 /**
  *  删除节点
- * @param selectedRows
+ * @param s2c_id
  */
 
-const handleRemove = async selectedRows => {
+const handleRemove = async s2c_id => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
   try {
-    await removeRule({
-      key: selectedRows.map(row => row.key),
+    await remove({
+      s2c_id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -76,10 +61,12 @@ const handleRemove = async selectedRows => {
   }
 };
 
-const TableList = () => {
+const TableList = ({ curCourse }) => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [datasource, setDatasource] = useState(null);
+  const [courseId, setCourseId] = useState('');
+  const [studentList, setStudentList] = useState([]);
   const [keywordsValue, setKeywordsValue] = useState('');
   const [keywords, setKeywords] = useState('');
 
@@ -87,47 +74,29 @@ const TableList = () => {
 
   const headerContent = (
     <div className="headerContent-wrapper">
-      <Text>课程名称：</Text>
-      <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择课程">
-        <Option value="test" key="1">
-          test
-        </Option>
+      <Text>课程编号：</Text>
+      <Select
+        style={{ width: 360 }}
+        onChange={async course_id => {
+          setCourseId(course_id);
+        }}
+        placeholder="请选择课程编号"
+      >
+        {curCourse.map(({ course_id, course_name }) => (
+          <Option value={course_id} key={course_id}>
+            {course_id}
+          </Option>
+        ))}
       </Select>
-      <Text>功课名称：</Text>
-      <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择功课">
-        <Option value="test" key="1">
-          test
-        </Option>
-      </Select>
-      <Text>学号：</Text>
-      <Input className="input-width" placeholder="请输入学号" onChange={e => {}}></Input>
       <Button
         type="primary"
-        onClick={() => {
-          setKeywordsValue('');
-          setKeywords('');
-          localAction.resetPageIndex(1);
-        }}
-      >
-        查询
-      </Button>
-      <Button
-        type="default"
-        onClick={() => {
-          setKeywordsValue('');
-          setKeywords('');
-          localAction.resetPageIndex(1);
-        }}
-      >
-        重置
-      </Button>
-      <Button
-        type="primary"
-        onClick={() => {
+        onClick={async () => {
+          const data = await queryStudents();
+          await setStudentList(data);
           handleModalVisible(true);
         }}
       >
-        创建学生
+        添加学生
       </Button>
     </div>
   );
@@ -152,13 +121,18 @@ const TableList = () => {
         actionRef={actionRef}
         rowKey="key"
         search={false}
-        options={{ fullScreen: false, reload: true, setting: true }}
+        options={{
+          fullScreen: false,
+          reload: true,
+          setting: true,
+        }}
         onChange={(_, _filter, _sorter) => {
           setSorter(`${_sorter.field}_${_sorter.order}`);
         }}
         params={{
           sorter,
           keywords,
+          course_id: courseId,
         }}
         toolBarRender={(action, { selectedRows }) => {
           localAction = action;
@@ -193,15 +167,14 @@ const TableList = () => {
             render: (_, record) => (
               <>
                 <a
-                  onClick={() => {
-                    handleUpdateModalVisible(true);
-                    setStepFormValues(record);
+                  onClick={async () => {
+                    await handleRemove(record['s2c_id']);
+                    localAction.resetPageIndex(1);
+                    localAction.reload();
                   }}
                 >
-                  配置
+                  删除
                 </a>
-                <Divider type="vertical" />
-                <a href="">订阅警报</a>
               </>
             ),
           },
@@ -213,17 +186,13 @@ const TableList = () => {
         }}
       />
       <CreateForm
-        onSubmit={async (value, callback) => {
-          const success = await handleAdd(value);
-          if (success) {
-            handleModalVisible(false);
-            callback(true);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          } else {
-            callback(false);
-          }
+        data={studentList}
+        selected={[]}
+        onSubmit={async value => {
+          await handleAdd(value, courseId);
+          handleModalVisible(false);
+          localAction.resetPageIndex(1);
+          localAction.reload();
         }}
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
@@ -232,4 +201,6 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default connect(({ studentList: { curCourse } }) => ({
+  curCourse,
+}))(TableList);

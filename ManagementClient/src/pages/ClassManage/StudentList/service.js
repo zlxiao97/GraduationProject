@@ -1,40 +1,48 @@
 import request from '@/utils/request';
+import transformStudentsToData from './utils/transformStudentsToData';
+import transformApiToData from './utils/transformApiToData';
 import { genAsyncSearch } from '@/utils/search/searchInCurPage';
 
-async function queryRule2(params) {
-  return request('/api/rule', {
-    params,
+async function queryRule2({ current, pageSize, course_id }) {
+  const data = await request('/api/manage/studentlist', {
+    params: {
+      current,
+      pageSize,
+      course_id,
+    },
   });
+  return transformApiToData(data);
 }
 
 export const queryRule = genAsyncSearch(queryRule2);
 
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'delete' },
-  });
+export async function queryCourses() {
+  return request('/api/manage/account/courses');
 }
-export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'post' },
+
+export async function queryStudents() {
+  const data = await request('/api/manage/student', {
+    params: {
+      current: -1,
+      pageSize: 10,
+    },
   });
+  return transformStudentsToData(data);
 }
-export async function updateRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'update' },
+
+export async function remove({ s2c_id }) {
+  return request('/api/manage/studentlist', {
+    method: 'DELETE',
+    data: { s2c_id },
   });
 }
 
-export async function add({ username, account_pwd, account_name }) {
-  return request('/api/manage/account', {
+export async function add({ stu_id, course_id }) {
+  return request('/api/manage/studentlist', {
     method: 'POST',
     data: {
-      username,
-      account_pwd,
-      account_name,
+      stu_id,
+      course_id,
     },
   });
 }

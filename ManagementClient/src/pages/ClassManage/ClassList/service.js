@@ -1,13 +1,14 @@
 import request from '@/utils/request';
-
+import transformApiToData from './uitls/transformApiToData';
 export async function queryRule({ current, pageSize, account_id }) {
-  return request('/api/manage/course', {
+  const data = await request('/api/manage/course', {
     params: {
       current,
       pageSize,
       account_id,
     },
   });
+  return transformApiToData(data);
 }
 export async function remove({ course_id }) {
   return request('/api/manage/course', {
