@@ -22,7 +22,7 @@ const CreateForm = props => {
   return (
     <Modal
       destroyOnClose
-      title="新增账号"
+      title="新增课程"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => onCancel()}
@@ -35,52 +35,16 @@ const CreateForm = props => {
           wrapperCol={{
             span: 15,
           }}
-          label="账号"
-          name="account_id"
+          label="课程名称"
+          name="course_name"
           rules={[
             {
               required: true,
-              message: '输入不能为空！',
+              message: '请输入课程',
             },
           ]}
         >
-          <Input placeholder="请输入账号" />
-        </FormItem>
-        <FormItem 
-          labelCol={{
-            span: 5,
-          }}
-          wrapperCol={{
-            span: 15,
-          }}
-          label="密码"
-          name="account_pwd"
-          rules={[
-            {
-              required: true,
-              message: '输入不能为空！',
-            },
-          ]}
-        >
-          <Password placeholder="请输入密码" />
-        </FormItem>
-        <FormItem
-          labelCol={{
-            span: 5,
-          }}
-          wrapperCol={{
-            span: 15,
-          }}
-          label="姓名"
-          name="account_name"
-          rules={[
-            {
-              required: true,
-              message: '输入不能为空！',
-            },
-          ]}
-        >
-          <Input placeholder="请输入姓名" />
+          <Input placeholder="请输入课程" />
         </FormItem>
       </Form>
     </Modal>
