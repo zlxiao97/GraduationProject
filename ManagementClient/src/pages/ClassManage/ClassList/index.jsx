@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { connect } from 'dva';
+import router from 'umi/router';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { columns } from './config/col-config-list';
@@ -147,9 +148,23 @@ const TableList = ({ account_id }) => {
                   删除
                 </a>
                 <Divider type="vertical" />
-                <a>学生名单</a>
+                <a
+                  onClick={() => {
+                    const { course_id } = record;
+                    router.push(`/classmanage/studentlist${course_id}`);
+                  }}
+                >
+                  学生名单
+                </a>
                 <Divider type="vertical" />
-                <a>考勤规则</a>
+                <a
+                  onClick={() => {
+                    const { course_id } = record;
+                    router.push(`/classmanage/attendancerule${course_id}`);
+                  }}
+                >
+                  考勤规则
+                </a>
               </>
             ),
           },

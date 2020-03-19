@@ -1,7 +1,7 @@
 import { queryCourses } from './service';
 
 const Model = {
-  namespace: 'studentList',
+  namespace: 'attendanceRule',
   state: {
     curCourse: [],
   },
@@ -23,7 +23,7 @@ const Model = {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        if (pathname === '/classmanage/studentlist:courseid') {
+        if (pathname === '/classmanage/attendancerule:courseid') {
           dispatch({
             type: 'fetchCurCourse',
             payload: '',

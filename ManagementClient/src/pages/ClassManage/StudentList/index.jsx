@@ -61,11 +61,16 @@ const handleRemove = async s2c_id => {
   }
 };
 
-const TableList = ({ curCourse }) => {
+const TableList = ({
+  curCourse,
+  match: {
+    params: { courseid },
+  },
+}) => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [datasource, setDatasource] = useState(null);
-  const [courseId, setCourseId] = useState('');
+  const [courseId, setCourseId] = useState(~courseid.indexOf(':') ? '' : courseid);
   const [studentList, setStudentList] = useState([]);
   const [keywordsValue, setKeywordsValue] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -77,6 +82,7 @@ const TableList = ({ curCourse }) => {
       <Text>课程编号：</Text>
       <Select
         style={{ width: 360 }}
+        value={courseId}
         onChange={async course_id => {
           setCourseId(course_id);
         }}
@@ -88,6 +94,7 @@ const TableList = ({ curCourse }) => {
           </Option>
         ))}
       </Select>
+
       <Button
         type="primary"
         onClick={async () => {

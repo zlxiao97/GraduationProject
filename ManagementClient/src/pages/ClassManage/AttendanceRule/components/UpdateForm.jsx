@@ -1,33 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Modal, TimePicker, DatePicker } from 'antd';
 
 const FormItem = Form.Item;
 const { RangePicker } = TimePicker;
 
-const CreateForm = props => {
+const UpdateForm = props => {
   const [form] = Form.useForm();
-  const { modalVisible, onSubmit: handleAdd, onCancel } = props;
+  const { updateModalVisible, onSubmit: handleEdit, onCancel } = props;
 
-  const onCallback = ok => {
-    if (ok) {
-      form.resetFields();
-    }
+  const [formVals, setFormVals] = useState({
+    lesson_id: props.values.lesson_id,
+    lesson_name: props.values.lesson_name,
+    date: props.values.date,
+    time: props.values.time,
+    lat: props.values.lat,
+    lng: props.values.lng,
+    range_radius: props.values.range_radius,
+  });
+
+  const resetForm = () => {
+    form.resetFields();
   };
 
   const okHandle = async () => {
     const fieldsValue = await form.validateFields();
-    handleAdd(fieldsValue, onCallback);
+    await setFormVals({ ...formVals, ...fieldsValue });
+    handleEdit({ ...formVals, ...fieldsValue }, resetForm);
   };
 
   return (
     <Modal
       destroyOnClose
-      title="创建规则"
-      visible={modalVisible}
+      title="编辑规则"
+      visible={updateModalVisible}
       onOk={okHandle}
       onCancel={() => onCancel()}
     >
-      <Form form={form}>
+      <Form
+        form={form}
+        initialValues={{
+          lesson_name: formVals.lesson_name,
+          date: formVals.date,
+          time: formVals.time,
+          lat: formVals.lat,
+          lng: formVals.lng,
+          range_radius: formVals.range_radius,
+        }}
+      >
         <FormItem
           labelCol={{
             span: 5,
@@ -141,4 +160,4 @@ const CreateForm = props => {
   );
 };
 
-export default CreateForm;
+export default UpdateForm;

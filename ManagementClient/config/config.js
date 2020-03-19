@@ -147,12 +147,12 @@ export default {
                 },
                 {
                   name: 'studentList',
-                  path: '/classmanage/studentlist',
+                  path: '/classmanage/studentlist:courseid',
                   component: './ClassManage/StudentList',
                 },
                 {
                   name: 'attendanceRule',
-                  path: '/classmanage/attendancerule',
+                  path: '/classmanage/attendancerule:courseid',
                   component: './ClassManage/AttendanceRule',
                 },
               ],
