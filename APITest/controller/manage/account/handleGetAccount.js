@@ -13,7 +13,7 @@ module.exports = (current, pageSize, account) => {
         data
       };
     } else {
-      return { total: 0, success: true, data: [] };
+      return { success: false, message: "您无权查看、编辑本数据" };
     }
   })(current, pageSize);
 };

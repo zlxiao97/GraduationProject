@@ -1,38 +1,35 @@
 import request from '@/utils/request';
-import { genAsyncSearch } from '@/utils/search/searchInCurPage';
+import transformApiToData from './utils/transformApiToData';
 
-async function queryRule2(params) {
-  return request('/api/rule', {
-    params,
+export async function queryRule({ current, pageSize }) {
+  const data = await request('/api/manage/account', {
+    params: {
+      current,
+      pageSize,
+    },
+  });
+  return transformApiToData(data);
+}
+
+export async function remove({account_id}) {
+  return request('/api/manage/account', {
+    method: 'DELETE',
+    data: { account_id },
   });
 }
 
-export const queryRule = genAsyncSearch(queryRule2);
-
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'delete' },
-  });
-}
-export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'post' },
-  });
-}
-export async function updateRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'update' },
+export async function update({ account_id, account_pwd, account_name }) {
+  return request('/api/manage/account', {
+    method: 'PUT',
+    data: { account_id, account_pwd, account_name },
   });
 }
 
-export async function add({ username, account_pwd, account_name }) {
+export async function add({ account_id, account_pwd, account_name }) {
   return request('/api/manage/account', {
     method: 'POST',
     data: {
-      username,
+      account_id,
       account_pwd,
       account_name,
     },

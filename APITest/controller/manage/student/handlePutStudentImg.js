@@ -11,7 +11,7 @@ module.exports = (stu_id, stu_img) => {
         }
       );
       return {
-        success: true,
+        success: affectedRows > 0 ? true : false,
         message: affectedRows > 0 ? "上传成功！" : "上传失败！"
       };
     })(stu_id, stu_img.filename);

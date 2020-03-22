@@ -1,17 +1,14 @@
-import { Button, Divider, message, Select, Input, Typography } from 'antd';
+import { Button, Divider, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
-import data2ExcelJson from '@/utils/excel/data2ExcelJson';
-import exportJson2Sheet from '@/utils/excel/exportJson2Sheet';
+import UpdateForm from './components/UpdateForm';
 import { columns } from './config/col-config-list';
-import { queryRule, updateRule, removeRule, add } from './service';
-const { Option } = Select;
-const { Text } = Typography;
-const { Search } = Input;
+import { queryRule, update, remove, add } from './service';
 
 let localAction = null;
+
 /**
  * 添加节点
  * @param fields
@@ -19,7 +16,7 @@ let localAction = null;
 const handleAdd = async fields => {
   const hide = message.loading('正在新增');
   const res = await add({
-    username: fields.username,
+    account_id: fields.account_id,
     account_pwd: fields.account_pwd,
     account_name: fields.account_name,
   });
@@ -36,35 +33,33 @@ const handleAdd = async fields => {
  */
 
 const handleUpdate = async fields => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('正在编辑');
 
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+    await update({
+      account_id: fields.account_id,
+      account_pwd: fields.account_pwd,
+      account_name: fields.account_name,
     });
     hide();
-    message.success('配置成功');
+    message.success('编辑成功');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('编辑失败请重试！');
     return false;
   }
 };
 /**
  *  删除节点
- * @param selectedRows
+ * @param account_id
  */
 
-const handleRemove = async selectedRows => {
+const handleRemove = async account_id => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
   try {
-    await removeRule({
-      key: selectedRows.map(row => row.key),
+    await remove({
+      account_id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -79,76 +74,27 @@ const handleRemove = async selectedRows => {
 const TableList = () => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
-  const [datasource, setDatasource] = useState(null);
-  const [keywordsValue, setKeywordsValue] = useState('');
-  const [keywords, setKeywords] = useState('');
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [updateModalValue, setUpdateModalValue] = useState({});
 
   const actionRef = useRef();
 
   const headerContent = (
     <div className="headerContent-wrapper">
-      <Text>课程名称：</Text>
-      <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择课程">
-        <Option value="test" key="1">
-          test
-        </Option>
-      </Select>
-      <Text>功课名称：</Text>
-      <Select style={{ width: 150 }} onChange={val => {}} placeholder="请选择功课">
-        <Option value="test" key="1">
-          test
-        </Option>
-      </Select>
-      <Text>学号：</Text>
-      <Input className="input-width" placeholder="请输入学号" onChange={e => {}}></Input>
-      <Button
-        type="primary"
-        onClick={() => {
-          setKeywordsValue('');
-          setKeywords('');
-          localAction.resetPageIndex(1);
-        }}
-      >
-        查询
-      </Button>
-      <Button
-        type="default"
-        onClick={() => {
-          setKeywordsValue('');
-          setKeywords('');
-          localAction.resetPageIndex(1);
-        }}
-      >
-        重置
-      </Button>
       <Button
         type="primary"
         onClick={() => {
           handleModalVisible(true);
         }}
       >
-        创建学生
+        添加课程负责人
       </Button>
     </div>
   );
   return (
     <PageHeaderWrapper content={headerContent}>
-      <div className="pageHeaderWrapper-fix-ahead-panel">
-        <Button
-          type="primary"
-          onClick={() => {
-            const body = data2ExcelJson(datasource, columns);
-            const headerOrder = ['规则名称', '描述', '服务调用次数', '状态', '上次调度时间'];
-            const sheetname = '范例报表';
-            const filename = '范例报表';
-            return exportJson2Sheet(body, headerOrder, sheetname, filename);
-          }}
-        >
-          导出报表
-        </Button>
-      </div>
       <ProTable
-        headerTitle="查询表格"
+        headerTitle={false}
         actionRef={actionRef}
         rowKey="key"
         search={false}
@@ -158,30 +104,14 @@ const TableList = () => {
         }}
         params={{
           sorter,
-          keywords,
         }}
         toolBarRender={(action, { selectedRows }) => {
           localAction = action;
-          return [
-            <Text>学生名称：</Text>,
-            <Search
-              placeholder="搜索..."
-              onSearch={val => {
-                setKeywords(val);
-              }}
-              onChange={e => {
-                setKeywordsValue(e.target.value);
-              }}
-              value={keywordsValue}
-              style={{ width: 200 }}
-            />,
-          ];
+          return [];
         }}
         tableAlertRender={false}
         request={async params => {
           const data = await queryRule(params);
-          const { data: datasource2 } = data;
-          await setDatasource(datasource2);
           return data;
         }}
         columns={[
@@ -193,15 +123,24 @@ const TableList = () => {
             render: (_, record) => (
               <>
                 <a
-                  onClick={() => {
-                    handleUpdateModalVisible(true);
-                    setStepFormValues(record);
+                  onClick={async () => {
+                    await setUpdateModalValue(record);
+                    setUpdateModalVisible(true);
                   }}
                 >
-                  配置
+                  编辑
                 </a>
                 <Divider type="vertical" />
-                <a href="">订阅警报</a>
+                <a
+                  onClick={async () => {
+                    const { account_id } = record;
+                    await handleRemove(account_id);
+                    localAction.resetPageIndex(1);
+                    localAction.reload();
+                  }}
+                >
+                  删除
+                </a>
               </>
             ),
           },
@@ -218,9 +157,8 @@ const TableList = () => {
           if (success) {
             handleModalVisible(false);
             callback(true);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+            localAction.resetPageIndex(1);
+            localAction.reload();
           } else {
             callback(false);
           }
@@ -228,6 +166,30 @@ const TableList = () => {
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
       />
+      {updateModalValue && Object.keys(updateModalValue).length ? (
+        <UpdateForm
+          onSubmit={async (value, callback) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              setUpdateModalVisible(false);
+              setUpdateModalValue({});
+              callback(true);
+              localAction.resetPageIndex(1);
+              localAction.reload();
+            } else {
+              setUpdateModalVisible(false);
+              setUpdateModalValue({});
+              callback(false);
+            }
+          }}
+          onCancel={() => {
+            setUpdateModalVisible(false);
+            setUpdateModalValue({});
+          }}
+          updateModalVisible={updateModalVisible}
+          values={updateModalValue}
+        />
+      ) : null}
     </PageHeaderWrapper>
   );
 };

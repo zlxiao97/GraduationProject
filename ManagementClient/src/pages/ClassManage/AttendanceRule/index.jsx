@@ -137,7 +137,7 @@ const TableList = ({
   return (
     <PageHeaderWrapper content={headerContent}>
       <ProTable
-        headerTitle="查询表格"
+        headerTitle={false}
         actionRef={actionRef}
         rowKey="key"
         search={false}
