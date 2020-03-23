@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -6,7 +7,7 @@
  * @flow
  */
 
-import React,{Component} from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -17,36 +18,29 @@ import {
   Image,
   TouchableHighlight,
   FlatList,
-  TextInput
+  TextInput,
 } from 'react-native';
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-import { 
-  regFace,
-  searchByFace
-} from "./api/api.js";
-import {
-  validateName
-} from "./utils/validate.js"
-
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {regFace, searchByFace} from './api/api.js';
+import {validateName} from './utils/validate.js';
+import {NavigationContainer} from '@react-navigation/native';
 
 const FaceView = NativeModules.PushFaceViewControllerModule;
 const FaceCheckHelper = Platform.select({
-  android: ()=> FaceView
+  android: () => FaceView,
 });
-const NativeModule  = new NativeEventEmitter(FaceCheckHelper);
+const NativeModule = new NativeEventEmitter(FaceCheckHelper);
 const ImgType = 'BASE64';
 const Group = 'test9';
 const configObj = {
-  'quality': {
+  quality: {
     minFaceSize: 120,
     blurThreshold: 0.7,
-    isCheckQuality: false
+    isCheckQuality: false,
   },
-  'liveActionArray': [
-    0,//眨眨眼
-    1,//张张嘴
+  liveActionArray: [
+    0, //眨眨眼
+    1, //张张嘴
     // 2,//向右摇头
     // 3,//向左摇头
     // 4,//抬头
@@ -54,19 +48,20 @@ const configObj = {
     // 6//摇头
   ],
   // "order": true,
-  "sound": true
-}
+  sound: true,
+};
 
-export default class App extends Component{
-
+export default class App extends Component {
   state = {
     images: [],
     name: '',
-    mode: 0 //0：人脸采集模式，1: 人脸识别模式
+    mode: 0, //0：人脸采集模式，1: 人脸识别模式
   };
 
-  componentDidMount(){
-    NativeModule.addListener('FaceCheckHelper',(data)=>this.faceCheckCallback(data));
+  componentDidMount() {
+    NativeModule.addListener('FaceCheckHelper', data =>
+      this.faceCheckCallback(data),
+    );
   }
 
   /* 
@@ -81,107 +76,125 @@ export default class App extends Component{
       bestImage: 最佳识别
   */
 
-  faceCheckCallback(data){
-    if(data.remindCode == 0){
-      let imgs = Object.keys(data.images).map((k,idx)=>{
+  faceCheckCallback(data) {
+    if (data.remindCode == 0) {
+      let imgs = Object.keys(data.images).map((k, idx) => {
         return (
           <View key={idx} style={styles.item}>
             <Image
               style={styles.image}
-              source={{uri: `data:image/jpg;base64,${data.images[k]}`}} />
+              source={{uri: `data:image/jpg;base64,${data.images[k]}`}}
+            />
             <Text>{k}</Text>
           </View>
         );
       });
-      let bestImage = data.images["bestImage"];
+      let bestImage = data.images['bestImage'];
       this._afterCollectImage(bestImage);
       this.setState({
-        images: imgs
+        images: imgs,
       });
-    }else if(data.remindCode == 36){
+    } else if (data.remindCode == 36) {
       alert('采集超时！');
-    }else{
+    } else {
       alert('采集失败！');
     }
   }
 
-  _afterCollectImage(bestImage){
-    if(this.state.mode == 0){
-      regFace(bestImage,ImgType,Group,this.state.name,{name: this.state.name}).then(data=>{
-        if(data.error_code == 0){
-          alert('人脸注册成功');
-        }else{
-          alert('人脸注册失败');
-          console.log(data);
-        }
-      }).catch(err=>{
-        console.log(err);
-      });
-    }else if(this.state.mode == 1){
-      searchByFace(bestImage,ImgType,Group).then(data=>{
-        if(data.error_code == 0){
-          let recSuccess = false;
-          let faceList = data.result.user_list;
-          let successFaces = faceList.map(ele=>{
-            return {
-              ...ele,
-              user_info: JSON.parse(ele.user_info)
-            };
-          }).filter(ele=>{
-            return ele.score > 80 && ele.user_info.name == this.state.name;
-          });
-          recSuccess = successFaces.length > 0 ? true : false;
-          if(recSuccess){
-            alert(`Welcome ${successFaces[0].user_info.name}！`);
-          }else{
-            alert('没有识别出您的信息，请确认您的人脸已被采集');
+  _afterCollectImage(bestImage) {
+    if (this.state.mode == 0) {
+      regFace(bestImage, ImgType, Group, this.state.name, {
+        name: this.state.name,
+      })
+        .then(data => {
+          if (data.error_code == 0) {
+            alert('人脸注册成功');
+          } else {
+            alert('人脸注册失败');
+            console.log(data);
           }
-        }else{
-          alert('人脸识别失败');
-        }
-      }).catch(err=>{
-        console.log(err);
-      });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (this.state.mode == 1) {
+      searchByFace(bestImage, ImgType, Group)
+        .then(data => {
+          if (data.error_code == 0) {
+            let recSuccess = false;
+            let faceList = data.result.user_list;
+            let successFaces = faceList
+              .map(ele => {
+                return {
+                  ...ele,
+                  user_info: JSON.parse(ele.user_info),
+                };
+              })
+              .filter(ele => {
+                return ele.score > 80 && ele.user_info.name == this.state.name;
+              });
+            recSuccess = successFaces.length > 0 ? true : false;
+            if (recSuccess) {
+              alert(`Welcome ${successFaces[0].user_info.name}！`);
+            } else {
+              alert('没有识别出您的信息，请确认您的人脸已被采集');
+            }
+          } else {
+            alert('人脸识别失败');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 
-  _onPressCollection(){
-    if(this.state.name && validateName(this.state.name)){
+  _onPressCollection() {
+    if (this.state.name && validateName(this.state.name)) {
       this.setState({
-        mode: 0
+        mode: 0,
       });
       FaceView.openPushFaceViewController(configObj);
-    }else{
+    } else {
       alert(`请输入您的姓名（由字母、数字、下划线组成）`);
     }
   }
 
-  _onPressRecognize(){
-    if(this.state.name && validateName(this.state.name)){
+  _onPressRecognize() {
+    if (this.state.name && validateName(this.state.name)) {
       this.setState({
-        mode: 1
+        mode: 1,
       });
       FaceView.openPushFaceViewController(configObj);
-    }else{
+    } else {
       alert(`请输入您的姓名（由字母、数字、下划线组成）`);
     }
   }
 
-  render(){
-      return (
-        <View style={[styles.body,styles.container,styles.centerM]}>
-          <TextInput style={[styles.input]} placeholder="请输入您的姓名：" value={this.state.name} onChangeText={(name) => this.setState({name})}></TextInput>
+  render() {
+    return (
+      <NavigationContainer>
+        <View style={[styles.body, styles.container, styles.centerM]}>
+          <TextInput
+            style={[styles.input]}
+            placeholder="请输入您的姓名："
+            value={this.state.name}
+            onChangeText={name => this.setState({name})}></TextInput>
           <TouchableHighlight onPress={this._onPressCollection.bind(this)}>
             <Text style={styles.button}>人脸采集</Text>
           </TouchableHighlight>
           <TouchableHighlight onPress={this._onPressRecognize.bind(this)}>
             <Text style={styles.button}>人脸识别</Text>
           </TouchableHighlight>
-          <FlatList style={styles.flex5} data={this.state.images} renderItem={({item})=>item}></FlatList>
+          <FlatList
+            style={styles.flex5}
+            data={this.state.images}
+            renderItem={({item}) => item}></FlatList>
         </View>
-      );
+      </NavigationContainer>
+    );
   }
-};
+}
 
 const styles = StyleSheet.create({
   body: {
@@ -189,25 +202,25 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 60,
-    flex: 1
+    flex: 1,
   },
   item: {
-    margin: 50
+    margin: 50,
   },
   image: {
     width: 180,
     height: 320,
-    backgroundColor: 'red'
+    backgroundColor: 'red',
   },
   centerM: {
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     height: 40,
     marginVertical: 40,
     marginHorizontal: 20,
     borderWidth: 1,
-    borderColor: 'black'
+    borderColor: 'black',
   },
   button: {
     paddingHorizontal: 20,
@@ -217,6 +230,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
