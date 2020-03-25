@@ -73,10 +73,22 @@ const request = extend({
     问题原因：IE缓存
     解决方法：链接：https://blog.csdn.net/qq_26941173/article/details/84935421
   */
-    'Cache-Control': 'no-cache', //兼容IE11，避免使用缓存，只设置该项时IE11依然使用缓存
-    Pragma: 'no-cache', //兼容IE11，避免使用缓存，只设置该项IE11、Edge及现代浏览器均不使用缓存
+    'Cache-Control': 'no-cache', // 兼容IE11，避免使用缓存，只设置该项时IE11依然使用缓存
+    Pragma: 'no-cache', // 兼容IE11，避免使用缓存，只设置该项IE11、Edge及现代浏览器均不使用缓存
   },
 });
+
+request.use(
+  async (ctx, next) => {
+    const { req } = ctx;
+    const { url } = req;
+    if (url.indexOf('/api/') !== -1) {
+      ctx.req.url = `http://120.26.77.19:3000${url.replace(`/api/`, '/')}`;
+    }
+    await next();
+  },
+  { global: true },
+);
 
 /**
  * 扩展request,增加token

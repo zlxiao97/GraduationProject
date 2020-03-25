@@ -254,11 +254,11 @@ export default {
   manifest: {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
-  proxy: {
-    '/api/': {
-      target: serveUrlMap.dev,
-      changeOrigin: true,
-      pathRewrite: { '^/api/': '' },
-    },
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: serveUrlMap.dev,
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api/': '' },
+  //   },
+  // },
 };
