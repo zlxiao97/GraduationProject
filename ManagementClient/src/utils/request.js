@@ -78,17 +78,17 @@ const request = extend({
   },
 });
 
-request.use(
-  async (ctx, next) => {
-    const { req } = ctx;
-    const { url } = req;
-    if (url.indexOf('/api/') !== -1) {
-      ctx.req.url = `http://120.26.77.19:3000${url.replace(`/api/`, '/')}`;
-    }
-    await next();
-  },
-  { global: true },
-);
+// request.use(
+//   async (ctx, next) => {
+//     const { req } = ctx;
+//     const { url } = req;
+//     if (url.indexOf('/api/') !== -1) {
+//       ctx.req.url = `http://120.26.77.19:3000${url.replace(`/api/`, '/')}`;
+//     }
+//     await next();
+//   },
+//   { global: true },
+// );
 
 /**
  * 扩展request,增加token
