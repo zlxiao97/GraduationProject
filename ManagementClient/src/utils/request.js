@@ -64,7 +64,7 @@ const errorHandler = error => {
 const request = extend({
   errorHandler,
   // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  credentials: 'same-origin', // 默认请求是否带上cookie
   headers: {
     Authorization: getToken() || '', // 避免服务端认为是攻击
     /*
