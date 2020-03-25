@@ -9,7 +9,6 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const PORT = 3000;
 const KEY = require("./utils/init.js");
 const router = require("./router/index.js");
@@ -17,6 +16,18 @@ const router = require("./router/index.js");
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.all("*", function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type,Content-Length, Authorization, Accept,X-Requested-With"
+  );
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By", " 3.2.1");
+  if (req.method == "OPTIONS") res.send(200);
+  else next();
+});
 
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(
@@ -26,7 +37,6 @@ app.use(
   })
 );
 
-app.use(cors());
 app.use("/", router(KEY));
 
 app.listen(PORT, () => {

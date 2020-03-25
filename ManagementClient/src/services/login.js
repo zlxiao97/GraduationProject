@@ -1,6 +1,7 @@
 import request from '@/utils/request';
+
 export async function accountLogin({ account, pwd }) {
-  return request('http://120.26.77.19:3000/manage/login', {
+  return request('/api/manage/login', {
     method: 'POST',
     data: {
       account,
