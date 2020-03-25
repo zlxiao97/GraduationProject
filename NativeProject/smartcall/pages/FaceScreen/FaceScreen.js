@@ -23,6 +23,9 @@ const FaceCheckHelper = Platform.select({
 const NativeModule = new NativeEventEmitter(FaceCheckHelper);
 
 export default class FaceScreen extends Component {
+  static navigationOptions = {
+    title: '人脸识别',
+  };
   state = {
     images: [],
     name: '',
@@ -144,6 +147,8 @@ export default class FaceScreen extends Component {
   }
 
   render() {
+    const currentUser = this.props.navigation.state.params;
+    console.log(currentUser);
     return (
       <View style={[styles.body, styles.container, styles.centerM]}>
         <TextInput

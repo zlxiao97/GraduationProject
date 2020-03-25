@@ -1,7 +1,8 @@
+import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
-import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
+
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -11,7 +12,7 @@ const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in yo
 const serveUrlMap = {
   local: 'http://localhost:3000',
   // dev: 'http://36.110.117.58:8000',
-  dev: 'http://10.3.69.40:3000',
+  dev: 'http://120.26.77.19:3000',
 };
 
 export const serverUrl = serveUrlMap.local;
@@ -255,7 +256,7 @@ export default {
   }, // chainWebpack: webpackPlugin,
   proxy: {
     '/api/': {
-      target: serveUrlMap.local,
+      target: serveUrlMap.dev,
       changeOrigin: true,
       pathRewrite: { '^/api/': '' },
     },
