@@ -24,7 +24,7 @@ const NativeModule = new NativeEventEmitter(FaceCheckHelper);
 
 export default class FaceScreen extends Component {
   static navigationOptions = {
-    title: '人脸识别',
+    title: '开始打卡',
   };
   state = {
     images: [],

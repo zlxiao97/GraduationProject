@@ -18,16 +18,24 @@ const fakeUser = {
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: '首页',
+    title: '登录',
+    headerStyle: {
+      backgroundColor: '#F2F2F2',
+    }, 
   };
   render() {
     const {navigation} = this.props;
     return (
       <View style={[styles.container]}>
         <Button
-          title="人脸识别"
+          title="登录"
           onPress={() => {
-            navigation.navigate('Face', fakeUser);
+            navigation.navigate('Info', fakeUser);
+          }}></Button>
+        <Button
+          title="找回密码"
+          onPress={() => {
+            navigation.navigate('Reset', fakeUser);
           }}></Button>
       </View>
     );
