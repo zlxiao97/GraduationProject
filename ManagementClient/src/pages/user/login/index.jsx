@@ -5,6 +5,7 @@ import { Link } from 'umi';
 import { connect } from 'dva';
 import styles from './style.less';
 import LoginFrom from './components/Login';
+
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
 
 const LoginMessage = ({ content }) => (
@@ -62,16 +63,6 @@ const Login = props => {
           />
         </Tab>
         <div>
-          <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
-            自动登录
-          </Checkbox>
-          <a
-            style={{
-              float: 'right',
-            }}
-          >
-            忘记密码
-          </a>
         </div>
         <Submit loading={submitting}>登录</Submit>
       </LoginFrom>
