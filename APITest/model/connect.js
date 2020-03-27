@@ -6,14 +6,16 @@ const {
   database,
   port
 } = require("../config/database.js");
-const connection = mysql.createConnection({
-  host,
-  user,
-  password,
-  database,
-  port
-});
-connection.connect();
-module.exports = () => {
-  return connection;
+
+module.exports = (SQL, cb) => {
+  const connection = mysql.createConnection({
+    host,
+    user,
+    password,
+    database,
+    port
+  });
+  connection.connect();
+  if (SQL) connection.query(SQL, cb);
+  connection.end;
 };

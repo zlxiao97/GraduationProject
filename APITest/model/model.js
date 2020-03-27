@@ -3,7 +3,7 @@ const generateInsertSQL = require("../utils/generateInsertSQL.js");
 const generateUpdateSQL = require("../utils/generateUpdateSQL.js");
 const generateDeleteSQL = require("../utils/generateDeleteSQL.js");
 const generateCountSQL = require("../utils/generateCountSQL.js");
-const connection = require("./connect.js")();
+const connect = require("./connect.js");
 
 module.exports = TABLE_NAME => ({
   /**
@@ -18,7 +18,7 @@ module.exports = TABLE_NAME => ({
     const SQL = generateSelectSQL(TABLE_NAME, current, pageSize, condition);
     console.log(SQL);
     return new Promise((res, rej) => {
-      connection.query(SQL, function(error, results) {
+      connect(SQL, function(error, results) {
         if (error) rej(error);
         res(results);
       });
@@ -29,7 +29,7 @@ module.exports = TABLE_NAME => ({
     const SQL = generateInsertSQL(TABLE_NAME, obj);
     console.log(SQL);
     return new Promise((res, rej) => {
-      connection.query(SQL, function(error, results) {
+      connect(SQL, function(error, results) {
         if (error) rej(error);
         res(results);
       });
@@ -40,7 +40,7 @@ module.exports = TABLE_NAME => ({
     const SQL = generateUpdateSQL(TABLE_NAME, obj, condition);
     console.log(SQL);
     return new Promise((res, rej) => {
-      connection.query(SQL, function(error, results) {
+      connect(SQL, function(error, results) {
         if (error) rej(error);
         res(results);
       });
@@ -51,7 +51,7 @@ module.exports = TABLE_NAME => ({
     const SQL = generateDeleteSQL(TABLE_NAME, condition);
     console.log(SQL);
     return new Promise((res, rej) => {
-      connection.query(SQL, function(error, results) {
+      connect(SQL, function(error, results) {
         if (error) rej(error);
         res(results);
       });
@@ -62,7 +62,7 @@ module.exports = TABLE_NAME => ({
     const SQL = generateCountSQL(TABLE_NAME, condition);
     console.log(SQL);
     return new Promise((res, rej) => {
-      connection.query(SQL, function(error, results) {
+      connect(SQL, function(error, results) {
         if (error) rej(error);
         const totals = results;
         if (totals && totals.length > 0) {
