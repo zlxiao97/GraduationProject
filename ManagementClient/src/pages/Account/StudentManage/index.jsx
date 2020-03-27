@@ -6,8 +6,8 @@ import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import PhotoImg from './components/PhotoImg';
 import { columns } from './config/col-config-list';
-import { serverUrl } from '@/../config/config';
 import { queryRule, update, remove, add, upload } from './service';
+
 const { Text } = Typography;
 
 let localAction = null;
@@ -176,7 +176,7 @@ const TableList = () => {
                 {record.stu_img ? (
                   <a
                     onClick={() => {
-                      window.open(`${serverUrl}/uploads/${record.stu_img}`);
+                      window.open(`/uploads/${record.stu_img}`);
                     }}
                   >
                     预览

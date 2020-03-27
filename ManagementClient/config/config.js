@@ -15,7 +15,7 @@ const serveUrlMap = {
   dev: 'http://120.26.77.19:3000',
 };
 
-export const serverUrl = serveUrlMap.local;
+export const serverUrl = serveUrlMap.dev;
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
