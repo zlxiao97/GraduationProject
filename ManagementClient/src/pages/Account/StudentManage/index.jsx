@@ -176,7 +176,7 @@ const TableList = () => {
                 {record.stu_img ? (
                   <a
                     onClick={() => {
-                      window.open(`/uploads/${record.stu_img}`);
+                      window.open(`http://120.26.77.19:3000/uploads/${record.stu_img}`);
                     }}
                   >
                     预览
