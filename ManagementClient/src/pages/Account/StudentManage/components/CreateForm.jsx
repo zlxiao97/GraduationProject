@@ -22,7 +22,7 @@ const CreateForm = props => {
     name: 'file',
     multiple: false,
     showUploadList: false,
-    action: () => new Promise(res => res({ status: 'success' })),
+    action: 'http://120.26.77.19:3000/upload',
     onChange({ file }) {
       const { status, name, originFileObj, type } = file;
       if (status === 'done' && originFileObj) {
@@ -64,7 +64,7 @@ const CreateForm = props => {
     const fieldsValue = await form.validateFields();
     const value = {
       ...fieldsValue,
-      faceImg: faceImg,
+      faceImg,
     };
     handleAdd(value, onCallback);
   };
