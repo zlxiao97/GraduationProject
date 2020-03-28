@@ -12,7 +12,7 @@ import {
   TextInput,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {regFace, searchByFace} from '../../api/api.js';
+import {regFace, searchByFace} from './service';
 import {validateName} from '../../utils/validate.js';
 import config from './config/config.js';
 

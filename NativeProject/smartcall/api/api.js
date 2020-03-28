@@ -1,45 +1,15 @@
-const host = "http://120.26.77.19:3000";
+import config from '../config/config';
+const fakeToken =
+  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoiMjAyMDgyMjMyNSIsInN5c3RlbSI6InN0dWRlbnQiLCJpYXQiOjE1ODU0MDA1NTQsImV4cCI6MTU4NjAwNTM1NH0.Ju3Sn8TvcITcQxVyRI3zur1Jks1uT8CHrRiaLyCZh0o';
+const {server} = config;
 
-export async function regFace(image,image_type,group_id,user_id,user_info={}){
-    const path = "/faceset/add";
-    const body = {
-        image,
-        image_type,
-        group_id,
-        user_id,
-        user_info: JSON.stringify(user_info)
-    };
-    const init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: Object.keys(body).map(key=>{
-            return `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`
-        }).join('&')
-    };
-    const data = await fetch(`${host}${path}`,init);
-    const json = data.json();
-    return json;
-}
-
-export async function searchByFace(image,image_type,group_id){
-    const path = "/faceset/search";
-    const body = {
-        image,
-        image_type,
-        group_id,
-    };
-    const init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: Object.keys(body).map(key=>{
-            return `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`
-        }).join('&')
-    };
-    const data = await fetch(`${host}${path}`,init);
-    const json = data.json();
-    return json;
-}
+export default async (path, options) => {
+  const data = await fetch(`${server}${path}`, {
+    ...options,
+    headers: {
+      Authorization: fakeToken,
+    },
+  });
+  //TODO:统一错误处理
+  return data.json();
+};
