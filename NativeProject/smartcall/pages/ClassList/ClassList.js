@@ -52,6 +52,7 @@ export default class ClassList extends React.Component {
       }
     });
   }
+
   render() {
     if (this.state.data && this.state.data.length > 0) {
       return (
@@ -96,27 +97,32 @@ export default class ClassList extends React.Component {
       </Container>
     );
   }
+
   loadItems(day) {
+    const items = this.state.items;
     const {dateString, day: date, month, year, timestamp} = day;
-    const data = this.state.data.filter(
-      ({start_time}) => moment(start_time).date() === date,
-    );
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = this.timeToString(time);
-        if (!this.state.items[strTime]) {
-          this.state.items[strTime] = [];
-        }
+    for (let i = -15; i < 85; i++) {
+      let time;
+      if (i >= 0) time = moment(timestamp).add(i, 'days');
+      if (i < 0) time = moment(timestamp).subtract(Math.abs(i), 'days');
+      const strTime = time.format('YYYY-MM-DD');
+      const data = this.state.data.filter(
+        ({start_time}) =>
+          moment(start_time)
+            .startOf('day')
+            .valueOf() === time.startOf('day').valueOf(),
+      );
+      if (!items[strTime]) {
+        items[strTime] = [];
       }
-      const newItems = {};
-      Object.keys(this.state.items).forEach(key => {
-        newItems[key] = this.state.items[key];
-      });
-      this.setState({
-        items: newItems,
-      });
-    }, 1000);
+      items[strTime] = data.map(({course_name, lesson_name}) => ({
+        name: course_name,
+        subname: lesson_name,
+      }));
+    }
+    this.setState({
+      items: {...items},
+    });
   }
 
   renderItem(item) {
