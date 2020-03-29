@@ -1,7 +1,15 @@
 import * as React from 'react';
 import {StyleSheet} from 'react-native';
 import moment from 'moment';
-import {Container, Text, Button, Content} from 'native-base';
+import {
+  Container,
+  Text,
+  Button,
+  Content,
+  Card,
+  CardItem,
+  Body,
+} from 'native-base';
 import {Agenda} from 'react-native-calendars';
 import {query, currentUser} from './service';
 
@@ -60,7 +68,9 @@ export default class ClassList extends React.Component {
           <Agenda
             items={this.state.items}
             loadItemsForMonth={this.loadItems.bind(this)}
-            selected={moment().format('YYYY-MM-DD')}
+            selected={moment()
+              .subtract(1, 'days')
+              .format('YYYY-MM-DD')}
             renderItem={this.renderItem.bind(this)}
             renderEmptyDate={this.renderEmptyDate.bind(this)}
             rowHasChanged={this.rowHasChanged.bind(this)}
@@ -115,10 +125,15 @@ export default class ClassList extends React.Component {
       if (!items[strTime]) {
         items[strTime] = [];
       }
-      items[strTime] = data.map(({course_name, lesson_name}) => ({
-        name: course_name,
-        subname: lesson_name,
-      }));
+      items[strTime] = data.map(
+        ({course_name, lesson_name, start_time, end_time}) => ({
+          name: course_name,
+          subname: lesson_name,
+          timerange: `${moment(start_time).format('HH:mm')} - ${moment(
+            end_time,
+          ).format('HH:mm')}`,
+        }),
+      );
     }
     this.setState({
       items: {...items},
@@ -128,13 +143,34 @@ export default class ClassList extends React.Component {
   renderItem(item) {
     const {navigation} = this.props;
     return (
-      <Content>
-        <Button
-          onPress={() => {
-            navigation.navigate('Face');
-          }}>
-          <Text>{item.name}</Text>
-        </Button>
+      <Content padder>
+        <Card>
+          <CardItem
+            header
+            button
+            onPress={() => {
+              navigation.navigate('Face');
+            }}>
+            <Text>{item.timerange}</Text>
+          </CardItem>
+          <CardItem
+            button
+            onPress={() => {
+              navigation.navigate('Face');
+            }}>
+            <Body>
+              <Text>{item.name}</Text>
+            </Body>
+          </CardItem>
+          <CardItem
+            footer
+            button
+            onPress={() => {
+              navigation.navigate('Face');
+            }}>
+            <Text>{item.subname}</Text>
+          </CardItem>
+        </Card>
       </Content>
     );
   }
