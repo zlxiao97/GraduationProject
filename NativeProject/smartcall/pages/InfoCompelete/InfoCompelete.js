@@ -13,6 +13,11 @@ export default class InfoCompelete extends React.Component {
     return (
       <View style={[styles.container]}>
         <Text>信息完善</Text>
+        <Button
+          title="首页"
+          onPress={() => {
+            navigation.navigate('Class');
+          }}></Button>
       </View>
     );
   }

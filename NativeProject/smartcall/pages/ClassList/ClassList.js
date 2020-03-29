@@ -11,20 +11,6 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Agenda} from 'react-native-calendars';
 import {query} from './service';
 
-const fakeUser = {
-  id: 'cqupt2016213931',
-  account: '2020822325',
-  name: '测试人员4',
-  system: 'student',
-  stu_face_isreg: 0,
-  remind_time: '5',
-  stu_code: '2020822325',
-  stu_img: 'faceImg-1583900351851.jpg',
-  stu_phoneno: '',
-  stu_school: '',
-  stu_avatar: '',
-};
-
 export default class ClassList extends React.Component {
   static navigationOptions = {
     title: '课程列表',
@@ -36,6 +22,19 @@ export default class ClassList extends React.Component {
     this.state = {
       items: {},
       data: [],
+      fakeUser: {
+        id: 'cqupt2016213931',
+        account: '2020822325',
+        name: '测试人员4',
+        system: 'student',
+        stu_face_isreg: 0,
+        remind_time: '5',
+        stu_code: '2020822325',
+        stu_img: 'faceImg-1583900351851.jpg',
+        stu_phoneno: '',
+        stu_school: '',
+        stu_avatar: '',
+      },
       /**
        * items={{
           '2012-05-22': [{name: 'item 1 - any js object'}],
@@ -48,6 +47,7 @@ export default class ClassList extends React.Component {
   }
 
   componentDidMount() {
+    const fakeUser = this.state.fakeUser;
     query({stu_id: fakeUser.id}).then(({data}) => {
       this.setState({
         data,
@@ -115,10 +115,13 @@ export default class ClassList extends React.Component {
   }
 
   renderItem(item) {
+    const {navigation} = this.props;
     return (
       <TouchableOpacity
         style={[styles.item, {height: item.height}]}
-        onPress={() => Alert.alert(item.name)}>
+        onPress={() => {
+          navigation.navigate('Face');
+        }}>
         <View style={[styles.itemContent]}>
           <Text>{item.name}</Text>
         </View>
@@ -147,12 +150,6 @@ export default class ClassList extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-  },
   item: {
     backgroundColor: 'white',
     flex: 1,
