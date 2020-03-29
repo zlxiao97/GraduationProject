@@ -1,19 +1,11 @@
 import * as React from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Container, Toast, Text, Button, Content} from 'native-base';
+import {login} from './service';
+import {setToken} from '../../utils/authorized';
 
 const fakeUser = {
-  id: '750dc5ae-b42c-4cd2-9f79-f91889acda36',
   account: '2020822325',
-  name: '测试人员4',
-  system: 'student',
-  stu_face_isreg: 0,
-  remind_time: '5',
-  stu_code: '2020822325',
-  stu_img: 'faceImg-1583900351851.jpg',
-  stu_phoneno: '',
-  stu_school: '',
-  stu_avatar: '',
+  pwd: '123',
 };
 
 export default class HomeScreen extends React.Component {
@@ -21,32 +13,66 @@ export default class HomeScreen extends React.Component {
     title: '登录',
     headerStyle: {
       backgroundColor: '#F2F2F2',
-    }, 
+    },
   };
-  render() {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showToast: false,
+    };
+  }
+
+  handleLogin() {
     const {navigation} = this.props;
-    return (
-      <View style={[styles.container]}>
-        <Button
-          title="登录"
-          onPress={() => {
+    login({account: fakeUser.account, pwd: fakeUser.pwd})
+      .then(res => {
+        const {success, token, message} = res;
+        if (success) {
+          setToken(token).then(() => {
+            Toast.show({
+              text: message,
+              buttonText: 'OK',
+              type: 'success',
+            });
             navigation.navigate('Info', fakeUser);
-          }}></Button>
-        <Button
-          title="找回密码"
-          onPress={() => {
-            navigation.navigate('Reset', fakeUser);
-          }}></Button>
-      </View>
+          });
+        } else {
+          Toast.show({
+            text: message,
+            buttonText: 'OK',
+            type: 'danger',
+          });
+        }
+      })
+      .catch(() => {
+        Toast.show({
+          text: '登录失败请重试',
+          buttonText: 'OK',
+          type: 'danger',
+        });
+      });
+  }
+
+  render() {
+    return (
+      <Container>
+        <Content padder>
+          <Button
+            style={{width: 120, marginVertical: 10}}
+            onPress={this.handleLogin.bind(this)}>
+            <Text>登录</Text>
+          </Button>
+          <Button
+            style={{width: 120, marginVertical: 10}}
+            onPress={() => {
+              const {navigation} = this.props;
+              navigation.navigate('Reset', fakeUser);
+            }}>
+            <Text>找回密码</Text>
+          </Button>
+        </Content>
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-  },
-});

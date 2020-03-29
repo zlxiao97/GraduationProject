@@ -14,9 +14,9 @@ export default class ResetPwd extends React.Component {
       <View style={[styles.container]}>
         <Text>找回密码</Text>
         <Button
-          title="信息完善"
+          title="确定"
           onPress={() => {
-            navigation.navigate('Info');
+            navigation.pop();
           }}></Button>
       </View>
     );

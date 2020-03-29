@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import {Root} from 'native-base';
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -12,6 +13,10 @@ import Router from './router/Router';
 
 export default class App extends Component {
   render() {
-    return <Router />;
+    return (
+      <Root>
+        <Router />
+      </Root>
+    );
   }
 }
