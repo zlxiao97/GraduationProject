@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Container, Text, Button, Content} from 'native-base';
 
 export default class InfoCompelete extends React.Component {
   static navigationOptions = {
@@ -11,23 +10,15 @@ export default class InfoCompelete extends React.Component {
     const currentUser = this.props.navigation.state.params;
     console.log(currentUser);
     return (
-      <View style={[styles.container]}>
+      <Container>
         <Text>信息完善</Text>
         <Button
-          title="首页"
           onPress={() => {
             navigation.navigate('Class');
-          }}></Button>
-      </View>
+          }}>
+          <Text>首页</Text>
+        </Button>
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-  },
-});

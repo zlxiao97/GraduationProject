@@ -125,15 +125,17 @@ export default class ClassList extends React.Component {
       if (!items[strTime]) {
         items[strTime] = [];
       }
-      items[strTime] = data.map(
-        ({course_name, lesson_name, start_time, end_time}) => ({
+      items[strTime] = data.map(item => {
+        const {course_name, lesson_name, start_time, end_time} = item;
+        return {
+          ...item,
           name: course_name,
           subname: lesson_name,
           timerange: `${moment(start_time).format('HH:mm')} - ${moment(
             end_time,
           ).format('HH:mm')}`,
-        }),
-      );
+        };
+      });
     }
     this.setState({
       items: {...items},
@@ -149,14 +151,14 @@ export default class ClassList extends React.Component {
             header
             button
             onPress={() => {
-              navigation.navigate('Face');
+              navigation.navigate('Face', {data: item});
             }}>
             <Text>{item.timerange}</Text>
           </CardItem>
           <CardItem
             button
             onPress={() => {
-              navigation.navigate('Face');
+              navigation.navigate('Face', {data: item});
             }}>
             <Body>
               <Text>{item.name}</Text>
@@ -166,7 +168,7 @@ export default class ClassList extends React.Component {
             footer
             button
             onPress={() => {
-              navigation.navigate('Face');
+              navigation.navigate('Face', {data: item});
             }}>
             <Text>{item.subname}</Text>
           </CardItem>
@@ -184,7 +186,7 @@ export default class ClassList extends React.Component {
   }
 
   rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+    return r1.lesson_id !== r2.lesson_id;
   }
 
   timeToString(time) {

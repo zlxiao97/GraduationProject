@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
+import {Platform, NativeModules, NativeEventEmitter} from 'react-native';
 import {
-  StyleSheet,
-  View,
+  Container,
   Text,
-  Platform,
-  NativeModules,
-  NativeEventEmitter,
+  Button,
+  Content,
+  List,
+  ListItem,
   Image,
-  TouchableHighlight,
-  FlatList,
-  TextInput,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+  Input,
+  Toast,
+} from 'native-base';
 import {regFace, searchByFace} from './service';
 import {validateName} from '../../utils/validate.js';
 import config from './config/config.js';
@@ -26,7 +25,10 @@ export default class FaceScreen extends Component {
   static navigationOptions = {
     title: '开始打卡',
   };
+  watchID = 0;
   state = {
+    initialPosition: 'unknown',
+    lastPosition: 'unknown',
     images: [],
     name: '',
     mode: 0, //0：人脸采集模式，1: 人脸识别模式
@@ -36,6 +38,28 @@ export default class FaceScreen extends Component {
     NativeModule.addListener('FaceCheckHelper', data =>
       this.faceCheckCallback(data),
     );
+    geolocation.getCurrentPosition(
+      position => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+      },
+      error => {
+        Toast.show({
+          text: error.message,
+          buttonText: 'OK',
+          type: 'danger',
+        });
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
+    this.watchID = geolocation.watchPosition(position => {
+      var lastPosition = JSON.stringify(position);
+      this.setState({lastPosition});
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
   }
   /* 
       Object.keys(data.images)
@@ -52,13 +76,10 @@ export default class FaceScreen extends Component {
     if (data.remindCode == 0) {
       let imgs = Object.keys(data.images).map((k, idx) => {
         return (
-          <View key={idx} style={styles.item}>
-            <Image
-              style={styles.image}
-              source={{uri: `data:image/jpg;base64,${data.images[k]}`}}
-            />
+          <Content key={idx}>
+            <Image source={{uri: `data:image/jpg;base64,${data.images[k]}`}} />
             <Text>{k}</Text>
-          </View>
+          </Content>
         );
       });
       let bestImage = data.images['bestImage'];
@@ -67,9 +88,17 @@ export default class FaceScreen extends Component {
         images: imgs,
       });
     } else if (data.remindCode == 36) {
-      alert('采集超时！');
+      Toast.show({
+        text: '采集超时！',
+        buttonText: 'OK',
+        type: 'danger',
+      });
     } else {
-      alert('采集失败！');
+      Toast.show({
+        text: '采集失败！',
+        buttonText: 'OK',
+        type: 'danger',
+      });
     }
   }
 
@@ -81,9 +110,17 @@ export default class FaceScreen extends Component {
       })
         .then(data => {
           if (data.error_code == 0) {
-            alert('人脸注册成功');
+            Toast.show({
+              text: '人脸注册成功',
+              buttonText: 'OK',
+              type: 'success',
+            });
           } else {
-            alert('人脸注册失败');
+            Toast.show({
+              text: '人脸注册失败',
+              buttonText: 'OK',
+              type: 'danger',
+            });
             console.log(data);
           }
         })
@@ -130,7 +167,11 @@ export default class FaceScreen extends Component {
       });
       FaceView.openPushFaceViewController(configObj);
     } else {
-      alert(`请输入您的姓名（由字母、数字、下划线组成）`);
+      Toast.show({
+        text: '请输入您的姓名（由字母、数字、下划线组成）',
+        buttonText: 'OK',
+        type: 'warning',
+      });
     }
   }
 
@@ -142,69 +183,52 @@ export default class FaceScreen extends Component {
       });
       FaceView.openPushFaceViewController(configObj);
     } else {
-      alert(`请输入您的姓名（由字母、数字、下划线组成）`);
+      Toast.show({
+        text: '请输入您的姓名（由字母、数字、下划线组成）',
+        buttonText: 'OK',
+        type: 'warning',
+      });
     }
   }
 
   render() {
-    const currentUser = this.props.navigation.state.params;
-    console.log(currentUser);
+    const data = this.props.navigation.state.params.data;
     return (
-      <View style={[styles.body, styles.container, styles.centerM]}>
-        <TextInput
-          style={[styles.input]}
-          placeholder="请输入您的姓名："
-          value={this.state.name}
-          onChangeText={name => this.setState({name})}></TextInput>
-        <TouchableHighlight onPress={this._onPressCollection.bind(this)}>
-          <Text style={styles.button}>人脸采集</Text>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this._onPressRecognize.bind(this)}>
-          <Text style={styles.button}>人脸识别</Text>
-        </TouchableHighlight>
-        <FlatList
-          style={styles.flex5}
-          data={this.state.images}
-          renderItem={({item}) => item}></FlatList>
-      </View>
+      <Container>
+        <Content padder>
+          <Content padder>
+            <Text>
+              考勤地点：（{data.lat}，{data.lng}）
+            </Text>
+            <Text>范围：{data.range_radius}</Text>
+          </Content>
+          <Content>
+            <Text>
+              <Text>初始位置: </Text>
+              {this.state.initialPosition}
+            </Text>
+            <Text>
+              <Text>当前位置: </Text>
+              {this.state.lastPosition}
+            </Text>
+          </Content>
+          <Input
+            placeholder="请输入您的姓名："
+            value={this.state.name}
+            onChangeText={name => this.setState({name})}></Input>
+          <Button onPress={this._onPressCollection.bind(this)}>
+            <Text>人脸采集</Text>
+          </Button>
+          <Button onPress={this._onPressRecognize.bind(this)}>
+            <Text>人脸识别</Text>
+          </Button>
+          <List>
+            {this.state.images.map(item => (
+              <ListItem>{item}</ListItem>
+            ))}
+          </List>
+        </Content>
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  body: {
-    backgroundColor: Colors.white,
-  },
-  container: {
-    marginTop: 60,
-    flex: 1,
-  },
-  item: {
-    margin: 50,
-  },
-  image: {
-    width: 180,
-    height: 320,
-    backgroundColor: 'red',
-  },
-  centerM: {
-    justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    marginVertical: 40,
-    marginHorizontal: 20,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginVertical: 10,
-    backgroundColor: 'teal',
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
