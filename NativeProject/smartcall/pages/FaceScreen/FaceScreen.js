@@ -11,9 +11,12 @@ import {
   Input,
   Toast,
 } from 'native-base';
+import Geolocation from '@react-native-community/geolocation';
 import {regFace, searchByFace} from './service';
 import {validateName} from '../../utils/validate.js';
 import config from './config/config.js';
+import getDistance from '../../utils/getDistance';
+import moment from 'moment';
 
 const FaceView = NativeModules.PushFaceViewControllerModule;
 const FaceCheckHelper = Platform.select({
@@ -27,18 +30,22 @@ export default class FaceScreen extends Component {
   };
   watchID = 0;
   state = {
-    initialPosition: 'unknown',
-    lastPosition: 'unknown',
+    isInRange: false,
+    isInTime: false,
+    curLng: 'unknown',
+    curLat: 'unknown',
     images: [],
     name: '',
     mode: 0, //0：人脸采集模式，1: 人脸识别模式
   };
 
   componentDidMount() {
+    const data = this.props.navigation.state.params.data;
+    const {lat, lng, range_radius, start_time, end_time} = data;
     NativeModule.addListener('FaceCheckHelper', data =>
       this.faceCheckCallback(data),
     );
-    geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       position => {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
@@ -52,14 +59,33 @@ export default class FaceScreen extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
-    this.watchID = geolocation.watchPosition(position => {
-      var lastPosition = JSON.stringify(position);
-      this.setState({lastPosition});
+    this.watchID = Geolocation.watchPosition(position => {
+      const {
+        coords: {longitude, latitude},
+      } = position;
+      const distance = getDistance(lat, lng, latitude, longitude);
+      const isInTime = moment().isBetween(start_time, end_time);
+      console.log(isInTime);
+      if (distance <= range_radius) {
+        this.setState({
+          curLng: longitude,
+          curLat: latitude,
+          isInTime,
+          isInRange: true,
+        });
+      } else {
+        this.setState({
+          curLng: longitude,
+          curLat: latitude,
+          isInTime,
+          isInRange: false,
+        });
+      }
     });
   }
 
   componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
+    Geolocation.clearWatch(this.watchID);
   }
   /* 
       Object.keys(data.images)
@@ -204,18 +230,12 @@ export default class FaceScreen extends Component {
           </Content>
           <Content>
             <Text>
-              <Text>初始位置: </Text>
-              {this.state.initialPosition}
-            </Text>
-            <Text>
-              <Text>当前位置: </Text>
-              {this.state.lastPosition}
+              <Text>当前位置: </Text>({this.state.curLat},{this.state.curLng})
             </Text>
           </Content>
-          <Input
-            placeholder="请输入您的姓名："
-            value={this.state.name}
-            onChangeText={name => this.setState({name})}></Input>
+          <Text>是否在考勤范围内：{this.state.isInRange ? '是' : '否'}</Text>
+          <Text>是否在考勤时间段：{this.state.isInTime ? '是' : '否'}</Text>
+          <Text></Text>
           <Button onPress={this._onPressCollection.bind(this)}>
             <Text>人脸采集</Text>
           </Button>
