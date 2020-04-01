@@ -1,15 +1,8 @@
 import * as React from 'react';
 import {StyleSheet} from 'react-native';
+import BasicLayout from '../../components/BasicLayout';
 import moment from 'moment';
-import {
-  Container,
-  Text,
-  Button,
-  Content,
-  Card,
-  CardItem,
-  Body,
-} from 'native-base';
+import {Container, Text, Content, Card, CardItem, Body} from 'native-base';
 import {Agenda} from 'react-native-calendars';
 import {query, currentUser} from './service';
 
@@ -22,7 +15,7 @@ export default class ClassList extends React.Component {
     super(props);
 
     this.state = {
-      currentUser: {},
+      currentUser: null,
       items: {},
       data: [],
       /**
@@ -45,26 +38,14 @@ export default class ClassList extends React.Component {
     });
   }
 
-  componentDidMount() {
-    currentUser().then(res => {
-      const {success, data} = res;
-      if (success) {
-        this.setState(
-          {
-            currentUser: data,
-          },
-          this._queryData.bind(this),
-        );
-      } else {
-        this.props.navigation.navigate('Home');
-      }
-    });
+  setCurrentUser(currentUser) {
+    this.setState({currentUser}, this._queryData.bind(this));
   }
 
   render() {
-    if (this.state.data && this.state.data.length > 0) {
-      return (
-        <Container>
+    return (
+      <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
+        {this.state.data && this.state.data.length > 0 ? (
           <Agenda
             items={this.state.items}
             loadItemsForMonth={this.loadItems.bind(this)}
@@ -98,13 +79,12 @@ export default class ClassList extends React.Component {
             // 日历：不要在当前月日历中显示其他月份的days
             // hideExtraDays={false}
           />
-        </Container>
-      );
-    }
-    return (
-      <Container>
-        <Text>暂无数据</Text>
-      </Container>
+        ) : (
+          <Content padder>
+            <Text>暂无数据</Text>
+          </Content>
+        )}
+      </BasicLayout>
     );
   }
 

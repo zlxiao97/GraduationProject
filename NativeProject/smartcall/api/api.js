@@ -11,7 +11,7 @@ export default async (path, options = {}) => {
     ...options,
     headers: {
       ...headers,
-      Authorization: token,
+      Authorization: token || '',
     },
   });
   //TODO:统一错误处理

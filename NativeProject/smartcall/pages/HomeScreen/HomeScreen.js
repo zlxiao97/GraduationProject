@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Container, Toast, Text, Button, Content} from 'native-base';
+import {Toast, Text, Button, Content} from 'native-base';
+import BasicLayout from '../../components/BasicLayout';
 import {login} from './service';
 import {setToken} from '../../utils/authorized';
 
@@ -20,7 +21,12 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       showToast: false,
+      currentUser: null,
     };
+  }
+
+  setCurrentUser(currentUser) {
+    this.setState({currentUser});
   }
 
   handleLogin() {
@@ -56,7 +62,7 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <Container>
+      <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
         <Content padder>
           <Button
             style={{width: 120, marginVertical: 10}}
@@ -72,7 +78,7 @@ export default class HomeScreen extends React.Component {
             <Text>找回密码</Text>
           </Button>
         </Content>
-      </Container>
+      </BasicLayout>
     );
   }
 }

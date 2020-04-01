@@ -7,8 +7,6 @@ export default class InfoCompelete extends React.Component {
   };
   render() {
     const {navigation} = this.props;
-    const currentUser = this.props.navigation.state.params;
-    console.log(currentUser);
     return (
       <Container>
         <Text>信息完善</Text>

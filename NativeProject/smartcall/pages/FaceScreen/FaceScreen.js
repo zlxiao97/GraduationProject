@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import {Platform, NativeModules, NativeEventEmitter} from 'react-native';
+import BasicLayout from '../../components/BasicLayout';
 import {
-  Container,
   Text,
   Button,
   Content,
   List,
   ListItem,
   Image,
-  Input,
   Toast,
 } from 'native-base';
 import Geolocation from '@react-native-community/geolocation';
@@ -30,6 +29,7 @@ export default class FaceScreen extends Component {
   };
   watchID = 0;
   state = {
+    currentUser: null,
     isInRange: false,
     isInTime: false,
     curLng: 'unknown',
@@ -38,6 +38,10 @@ export default class FaceScreen extends Component {
     name: '',
     mode: 0, //0：人脸采集模式，1: 人脸识别模式
   };
+
+  setCurrentUser(currentUser) {
+    this.setState({currentUser});
+  }
 
   componentDidMount() {
     const data = this.props.navigation.state.params.data;
@@ -65,7 +69,6 @@ export default class FaceScreen extends Component {
       } = position;
       const distance = getDistance(lat, lng, latitude, longitude);
       const isInTime = moment().isBetween(start_time, end_time);
-      console.log(isInTime);
       if (distance <= range_radius) {
         this.setState({
           curLng: longitude,
@@ -147,7 +150,6 @@ export default class FaceScreen extends Component {
               buttonText: 'OK',
               type: 'danger',
             });
-            console.log(data);
           }
         })
         .catch(err => {
@@ -220,7 +222,7 @@ export default class FaceScreen extends Component {
   render() {
     const data = this.props.navigation.state.params.data;
     return (
-      <Container>
+      <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
         <Content padder>
           <Content padder>
             <Text>
@@ -248,7 +250,7 @@ export default class FaceScreen extends Component {
             ))}
           </List>
         </Content>
-      </Container>
+      </BasicLayout>
     );
   }
 }
