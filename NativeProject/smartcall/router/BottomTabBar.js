@@ -1,5 +1,6 @@
 import React from 'react';
 import {Image, StyleSheet} from 'react-native';
+import {Icon} from 'native-base';
 import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
 import AtStatisticsStackNavigator from './AtStatisticsStackNavigator';
@@ -13,11 +14,7 @@ const RouteConfigs = {
       tabBarLabel: '登录',
       tabBarButtonComponent: () => false,
       tabBarIcon: ({focused}) => {
-        return (
-          <Image
-            source={require('../res/list.png')}
-            style={styles.BottomTabBarItem}></Image>
-        );
+        return <Icon name="list" />;
       },
     },
   },
@@ -26,11 +23,7 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '课程列表',
       tabBarIcon: ({focused}) => {
-        return (
-          <Image
-            source={require('../res/list.png')}
-            style={styles.BottomTabBarItem}></Image>
-        );
+        return <Icon type="FontAwesome" name="list-ul" />;
       },
     },
   },
@@ -39,11 +32,7 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '考勤统计',
       tabBarIcon: ({focused}) => {
-        return (
-          <Image
-            source={require('../res/analysis.png')}
-            style={styles.BottomTabBarItem}></Image>
-        );
+        return <Icon type="Ionicons" name="ios-stats" />;
       },
     },
   },
@@ -52,11 +41,7 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '设置',
       tabBarIcon: ({focused}) => {
-        return (
-          <Image
-            source={require('../res/setting.png')}
-            style={styles.BottomTabBarItem}></Image>
-        );
+        return <Icon type="AntDesign" name="setting" />;
       },
     },
   },

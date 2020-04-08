@@ -1,5 +1,19 @@
 import * as React from 'react';
-import {Toast, Text, Button, Content} from 'native-base';
+import {
+  Container,
+  Header,
+  Title,
+  Left,
+  Icon,
+  Right,
+  Button,
+  Body,
+  Content,
+  Text,
+  Card,
+  CardItem,
+  Toast,
+} from 'native-base';
 import BasicLayout from '../../components/BasicLayout';
 import {login} from './service';
 import {setToken} from '../../utils/authorized';
@@ -63,14 +77,26 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
-        <Content padder>
+        <Content padder style={{paddingHorizontal: 20}}>
+          <Card>
+            <CardItem>
+              <Body>
+                <Text>Smart Call</Text>
+              </Body>
+            </CardItem>
+          </Card>
           <Button
-            style={{width: 120, marginVertical: 10}}
+            full
+            rounded
+            danger
+            style={{marginTop: 10}}
             onPress={this.handleLogin.bind(this)}>
             <Text>登录</Text>
           </Button>
           <Button
-            style={{width: 120, marginVertical: 10}}
+            transparent 
+            rounded
+            style={{marginTop: 10}}
             onPress={() => {
               const {navigation} = this.props;
               navigation.navigate('Reset', fakeUser);

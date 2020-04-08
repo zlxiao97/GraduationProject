@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Container, Text, Button, Content} from 'native-base';
+import {Container, Text, Button, Content, Icon} from 'native-base';
 
 export default class Settings extends React.Component {
   static navigationOptions = {
@@ -9,7 +9,15 @@ export default class Settings extends React.Component {
     const {navigation} = this.props;
     return (
       <Container>
-        <Text>设置</Text>
+        <Content>
+          <Icon name="home" />
+          <Icon
+            ios="ios-menu"
+            android="md-menu"
+            style={{fontSize: 20, color: 'red'}}
+          />
+          <Icon type="FontAwesome" name="home" />
+        </Content>
       </Container>
     );
   }
