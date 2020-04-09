@@ -2,7 +2,15 @@ import * as React from 'react';
 import {StyleSheet} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
 import moment from 'moment';
-import {Container, Text, Content, Card, CardItem, Body} from 'native-base';
+import {
+  Container,
+  Text,
+  Content,
+  Card,
+  CardItem,
+  Body,
+  Spinner,
+} from 'native-base';
 import {Agenda} from 'react-native-calendars';
 import {query, currentUser} from './service';
 
@@ -81,7 +89,7 @@ export default class ClassList extends React.Component {
           />
         ) : (
           <Content padder>
-            <Text>暂无数据</Text>
+            <Spinner />
           </Content>
         )}
       </BasicLayout>

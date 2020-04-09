@@ -13,14 +13,43 @@ import {
   Card,
   CardItem,
   Toast,
+  Form,
+  Item,
+  Input,
+  Label,
 } from 'native-base';
+import {Image} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
+import Logo from '../../components/Logo';
 import {login} from './service';
 import {setToken} from '../../utils/authorized';
 
+//TODO：remove
 const fakeUser = {
   account: '2020822325',
   pwd: '123',
+};
+
+const LogoTitle = ({title}) => {
+  return (
+    <Content
+      padder
+      contentContainerStyle={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Logo width={60} height={44} />
+      <Text
+        style={{
+          fontSize: 33,
+          fontWeight: 'bold',
+          fontFamily: 'Avenir,Helvetica Neue,Arial,Helvetica,sans-serif',
+        }}>
+        {title}
+      </Text>
+    </Content>
+  );
 };
 
 export default class HomeScreen extends React.Component {
@@ -36,6 +65,8 @@ export default class HomeScreen extends React.Component {
     this.state = {
       showToast: false,
       currentUser: null,
+      account: '',
+      pwd: '',
     };
   }
 
@@ -43,9 +74,18 @@ export default class HomeScreen extends React.Component {
     this.setState({currentUser});
   }
 
+  handleAccountChange(account) {
+    this.setState({account});
+  }
+
+  handlePwdChange(pwd) {
+    this.setState({pwd});
+  }
+
   handleLogin() {
     const {navigation} = this.props;
-    login({account: fakeUser.account, pwd: fakeUser.pwd})
+    const {account, pwd} = this.state;
+    login({account, pwd})
       .then(res => {
         const {success, token, message} = res;
         if (success) {
@@ -55,7 +95,7 @@ export default class HomeScreen extends React.Component {
               buttonText: 'OK',
               type: 'success',
             });
-            navigation.navigate('Info', fakeUser);
+            navigation.navigate('Info');
           });
         } else {
           Toast.show({
@@ -77,32 +117,47 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
-        <Content padder style={{paddingHorizontal: 20}}>
-          <Card>
-            <CardItem>
-              <Body>
-                <Text>Smart Call</Text>
-              </Body>
-            </CardItem>
-          </Card>
+        <Content padder style={{paddingHorizontal: 20, paddingTop: '10%'}}>
+          <LogoTitle style={{width: '100%'}} title={'Smart Call Mobile'} />
+          <Form>
+            <Item floatingLabel>
+              <Label>学号</Label>
+              <Input
+                value={this.state.account}
+                onChangeText={this.handleAccountChange.bind(this)}
+              />
+            </Item>
+            <Item floatingLabel last>
+              <Label>密码</Label>
+              <Input
+                value={this.state.pwd}
+                onChangeText={this.handlePwdChange.bind(this)}
+              />
+            </Item>
+          </Form>
           <Button
             full
             rounded
             danger
-            style={{marginTop: 10}}
+            style={{marginTop: 40}}
             onPress={this.handleLogin.bind(this)}>
             <Text>登录</Text>
           </Button>
-          <Button
-            transparent 
-            rounded
-            style={{marginTop: 10}}
-            onPress={() => {
-              const {navigation} = this.props;
-              navigation.navigate('Reset', fakeUser);
+          <Content
+            padder
+            contentContainerStyle={{
+              alignItems: 'flex-end',
             }}>
-            <Text>找回密码</Text>
-          </Button>
+            <Button
+              transparent
+              small
+              onPress={() => {
+                const {navigation} = this.props;
+                navigation.navigate('Reset');
+              }}>
+              <Text>找回密码</Text>
+            </Button>
+          </Content>
         </Content>
       </BasicLayout>
     );

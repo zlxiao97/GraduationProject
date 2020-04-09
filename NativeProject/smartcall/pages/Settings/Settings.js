@@ -1,14 +1,22 @@
 import * as React from 'react';
 import {Container, Text, Button, Content, Icon} from 'native-base';
+import BasicLayout from '../../components/BasicLayout';
 
 export default class Settings extends React.Component {
   static navigationOptions = {
     title: '设置',
   };
+  state = {
+    currentUser: null,
+  };
+
+  setCurrentUser(currentUser) {
+    this.setState({currentUser});
+  }
   render() {
     const {navigation} = this.props;
     return (
-      <Container>
+      <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
         <Content>
           <Icon name="home" />
           <Icon
@@ -18,7 +26,7 @@ export default class Settings extends React.Component {
           />
           <Icon type="FontAwesome" name="home" />
         </Content>
-      </Container>
+      </BasicLayout>
     );
   }
 }
