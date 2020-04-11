@@ -1,18 +1,9 @@
 import React, {Component} from 'react';
 import {Platform, NativeModules, NativeEventEmitter} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
-import {
-  Text,
-  Button,
-  Content,
-  List,
-  ListItem,
-  Image,
-  Toast,
-} from 'native-base';
+import {Text, Button, Content, List, ListItem, Image, Toast} from 'native-base';
 import Geolocation from '@react-native-community/geolocation';
 import {regFace, searchByFace} from './service';
-import {validateName} from '../../utils/validate.js';
 import config from './config/config.js';
 import getDistance from '../../utils/getDistance';
 import moment from 'moment';
@@ -189,7 +180,7 @@ export default class FaceScreen extends Component {
 
   _onPressCollection() {
     const {configObj} = config;
-    if (this.state.name && validateName(this.state.name)) {
+    if (this.state.name) {
       this.setState({
         mode: 0,
       });
@@ -205,7 +196,7 @@ export default class FaceScreen extends Component {
 
   _onPressRecognize() {
     const {configObj} = config;
-    if (this.state.name && validateName(this.state.name)) {
+    if (this.state.name) {
       this.setState({
         mode: 1,
       });
@@ -237,7 +228,7 @@ export default class FaceScreen extends Component {
           </Content>
           <Text>是否在考勤范围内：{this.state.isInRange ? '是' : '否'}</Text>
           <Text>是否在考勤时间段：{this.state.isInTime ? '是' : '否'}</Text>
-          <Text></Text>
+          <Text />
           <Button onPress={this._onPressCollection.bind(this)}>
             <Text>人脸采集</Text>
           </Button>

@@ -13,8 +13,6 @@ export default class BasicLayout extends React.Component {
       const {setCurrentUser} = this.props;
       if (success) {
         setCurrentUser && setCurrentUser(currentUser);
-      } else {
-        this.props.navigation.navigate('Home');
       }
     });
   }

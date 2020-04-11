@@ -3,16 +3,16 @@ const express = require("express");
 const router = express.Router();
 
 module.exports = () => {
-  router.put("/", function(req, res) {
+  router.put("/", function (req, res) {
     if (req.user) {
       const { system } = req.user;
       if (system === "student") {
-        const { stu_id, stu_pwd } = req.body;
-        handleUpdatePwd(stu_id, stu_pwd)
-          .then(respones => {
+        const { stu_phoneno, stu_pwd } = req.body;
+        handleUpdatePwd(stu_phoneno, stu_pwd)
+          .then((respones) => {
             res.send(respones);
           })
-          .catch(err => {
+          .catch((err) => {
             res.send(err);
           });
       } else {

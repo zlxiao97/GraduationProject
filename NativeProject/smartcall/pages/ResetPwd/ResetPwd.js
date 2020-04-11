@@ -1,6 +1,17 @@
 import * as React from 'react';
-import {Container, Text, Button, Content} from 'native-base';
+import {
+  Text,
+  Button,
+  Content,
+  Form,
+  Item,
+  Input,
+  Label,
+  Toast,
+} from 'native-base';
 import BasicLayout from '../../components/BasicLayout';
+import {reset} from './service';
+import validate from '../../utils/validate';
 
 export default class ResetPwd extends React.Component {
   static navigationOptions = {
@@ -8,23 +19,83 @@ export default class ResetPwd extends React.Component {
   };
 
   state = {
-    currentUser: null,
+    stu_phoneno: '',
+    stu_pwd: '',
   };
 
-  setCurrentUser(currentUser) {
-    this.setState({currentUser});
+  handlePwdChange(stu_pwd) {
+    this.setState({stu_pwd});
+  }
+
+  handlePhoneChange(stu_phoneno) {
+    this.setState({stu_phoneno});
+  }
+  handleSubmit() {
+    const {navigation} = this.props;
+    const {stu_pwd, stu_phoneno} = this.state;
+    if (validate({stu_phoneno, stu_pwd})) {
+      reset({stu_phoneno, stu_pwd})
+        .then(res => {
+          const {success, message} = res;
+          if (success) {
+            Toast.show({
+              text: message,
+              buttonText: 'OK',
+              type: 'success',
+            });
+            navigation.pop();
+          } else {
+            Toast.show({
+              text: message,
+              buttonText: 'OK',
+              type: 'danger',
+            });
+          }
+        })
+        .catch(() => {
+          Toast.show({
+            text: '网络错误，请重试',
+            buttonText: 'OK',
+            type: 'danger',
+          });
+        });
+    } else {
+      Toast.show({
+        text: '请输入新密码',
+        buttonText: 'OK',
+        type: 'warning',
+      });
+    }
   }
   render() {
-    const {navigation} = this.props;
     return (
-      <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
-        <Text>找回密码</Text>
-        <Button
-          onPress={() => {
-            navigation.pop();
-          }}>
-          <Text>确定</Text>
-        </Button>
+      <BasicLayout>
+        <Content padder style={{marginTop: 100}}>
+          <Form>
+            <Item floatingLabel>
+              <Label>手机号码</Label>
+              <Input
+                value={this.state.stu_phoneno}
+                onChangeText={this.handlePhoneChange.bind(this)}
+              />
+            </Item>
+            <Item floatingLabel>
+              <Label>新密码</Label>
+              <Input
+                value={this.state.stu_pwd}
+                onChangeText={this.handlePwdChange.bind(this)}
+              />
+            </Item>
+          </Form>
+          <Button
+            full
+            rounded
+            success
+            style={{marginTop: 40}}
+            onPress={this.handleSubmit.bind(this)}>
+            <Text>完成</Text>
+          </Button>
+        </Content>
       </BasicLayout>
     );
   }

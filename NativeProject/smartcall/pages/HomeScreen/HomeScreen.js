@@ -18,11 +18,11 @@ import {
   Input,
   Label,
 } from 'native-base';
-import {Image} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
 import Logo from '../../components/Logo';
 import {login} from './service';
 import {setToken} from '../../utils/authorized';
+import validate from '../../utils/validate';
 
 //TODO：remove
 const fakeUser = {
@@ -85,33 +85,41 @@ export default class HomeScreen extends React.Component {
   handleLogin() {
     const {navigation} = this.props;
     const {account, pwd} = this.state;
-    login({account, pwd})
-      .then(res => {
-        const {success, token, message} = res;
-        if (success) {
-          setToken(token).then(() => {
+    if (validate({account, pwd})) {
+      login({account, pwd})
+        .then(res => {
+          const {success, token, message} = res;
+          if (success) {
+            setToken(token).then(() => {
+              Toast.show({
+                text: message,
+                buttonText: 'OK',
+                type: 'success',
+              });
+              navigation.navigate('Info');
+            });
+          } else {
             Toast.show({
               text: message,
               buttonText: 'OK',
-              type: 'success',
+              type: 'danger',
             });
-            navigation.navigate('Info');
-          });
-        } else {
+          }
+        })
+        .catch(() => {
           Toast.show({
-            text: message,
+            text: '登录失败请重试',
             buttonText: 'OK',
             type: 'danger',
           });
-        }
-      })
-      .catch(() => {
-        Toast.show({
-          text: '登录失败请重试',
-          buttonText: 'OK',
-          type: 'danger',
         });
+    } else {
+      Toast.show({
+        text: '请输入学号和密码',
+        buttonText: 'OK',
+        type: 'warning',
       });
+    }
   }
 
   render() {
@@ -130,6 +138,7 @@ export default class HomeScreen extends React.Component {
             <Item floatingLabel last>
               <Label>密码</Label>
               <Input
+                secureTextEntry={true}
                 value={this.state.pwd}
                 onChangeText={this.handlePwdChange.bind(this)}
               />
