@@ -3194,6 +3194,11 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3, inherits@~2.0.3:
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
+initials@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/initials/-/initials-3.0.1.tgz#42a3bff5c6b4ab4581c15ee0e451f5f63239fc49"
+  integrity sha512-jZHGpuCnASob7wrbdq7/m9VFv5eJJR8pHpB2e46M0Q4A86ym9m2GK3oxH4ai0HQNQlGGWPQQapZoO+qgxw5X8Q==
+
 inquirer@^3.0.6:
   version "3.3.0"
   resolved "https://registry.npmjs.org/inquirer/-/inquirer-3.3.0.tgz#9dd2f2ad765dcab1ff0443b491442a20ba227dc9"
@@ -5400,6 +5405,13 @@ react-native-tab-view@^2.11.0:
   version "2.13.0"
   resolved "https://registry.npmjs.org/react-native-tab-view/-/react-native-tab-view-2.13.0.tgz#23037aa43b0f8f682ddc20415a4baaaf6f82ae8f"
   integrity sha512-AeYbp/u91+D/C9+PmVEPBmFb3ixv8IkLMC3Sc5MajJ/fg0Zl3Of+BcEknBvTnKoe7Fj2y8+Qf9zorBbh5xzh4A==
+
+react-native-text-avatar@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/react-native-text-avatar/-/react-native-text-avatar-1.0.7.tgz#27fa0819c632fe1d7b855365a4c9cb75289adac6"
+  integrity sha512-4KdSb/cgYHIfmxXIwgHHzsj0+H1qnEhLvMwPngMKWKLPZiPKSUV3JpuBW6M6c4aFJ9sX0OW1zZuYtczbUpI9Og==
+  dependencies:
+    initials "^3.0.0"
 
 react-native-vector-icons@^6.6.0:
   version "6.6.0"

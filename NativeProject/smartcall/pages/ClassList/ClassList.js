@@ -10,7 +10,11 @@ import {
   CardItem,
   Body,
   Spinner,
+  Icon,
+  Right,
+  Left,
 } from 'native-base';
+import TextAvatar from 'react-native-text-avatar';
 import {Agenda} from 'react-native-calendars';
 import {query, currentUser} from './service';
 
@@ -89,7 +93,7 @@ export default class ClassList extends React.Component {
           />
         ) : (
           <Content padder>
-            <Spinner />
+            <Spinner color="#9B15A9" />
           </Content>
         )}
       </BasicLayout>
@@ -132,6 +136,12 @@ export default class ClassList extends React.Component {
 
   renderItem(item) {
     const {navigation} = this.props;
+    const getBg = () => {
+      const bgs = ['#00B075', '#EB7F24', '#9B15A9'];
+      const i = Math.floor(Math.random() * bgs.length);
+      console.log(bgs[i]);
+      return bgs[i];
+    };
     return (
       <Content padder>
         <Card>
@@ -148,9 +158,23 @@ export default class ClassList extends React.Component {
             onPress={() => {
               navigation.navigate('Face', {data: item});
             }}>
-            <Body>
-              <Text>{item.name}</Text>
-            </Body>
+            <Left>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                {item.name}
+              </Text>
+            </Left>
+            <Right>
+              <TextAvatar
+                backgroundColor={getBg()}
+                textColor={'#ffffff'}
+                size={60}
+                type={'circle'}>
+                {item.name
+                  .trim()
+                  .split('')
+                  .shift()}
+              </TextAvatar>
+            </Right>
           </CardItem>
           <CardItem
             footer
@@ -167,8 +191,14 @@ export default class ClassList extends React.Component {
 
   renderEmptyDate() {
     return (
-      <Content style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
+      <Content padder>
+        <Card>
+          <CardItem bordered>
+            <Body>
+              <Text style={{height: 60, lineHeight: 60}}>今天没有课喔</Text>
+            </Body>
+          </CardItem>
+        </Card>
       </Content>
     );
   }
@@ -182,27 +212,3 @@ export default class ClassList extends React.Component {
     return date.toISOString().split('T')[0];
   }
 }
-
-const styles = StyleSheet.create({
-  item: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17,
-  },
-  itemContent: {
-    display: 'flex',
-    height: 60,
-    borderWidth: 1,
-    borderColor: 'black',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  emptyDate: {
-    height: 15,
-    flex: 1,
-    paddingTop: 30,
-  },
-});
