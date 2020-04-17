@@ -112,7 +112,7 @@ export default class InfoCompelete extends React.Component {
           <Button
             full
             rounded
-            success
+            danger
             style={{marginTop: 40}}
             onPress={this.handleSubmit.bind(this)}>
             <Text>完成</Text>
