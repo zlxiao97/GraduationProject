@@ -1,51 +1,57 @@
 import request from '../../api/api';
+import qs from 'qs';
 
-export async function regFace(
-  image,
-  image_type,
-  group_id,
-  user_id,
-  user_info = {},
-) {
-  const path = '/faceset/add';
-  const body = {
-    image,
-    image_type,
-    group_id,
-    user_id,
-    user_info: JSON.stringify(user_info),
-  };
-  const init = {
+const image_type = 'BASE64';
+
+async function matchFace({stu_base64, imgUrl}) {
+  const option = {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Content-Type': 'application/json',
     },
-    body: Object.keys(body)
-      .map(key => {
-        return `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`;
-      })
-      .join('&'),
+    body: JSON.stringify({
+      img1: {
+        image: stu_base64,
+        image_type,
+        face_type: 'CERT',
+      },
+      img2: {
+        image: imgUrl,
+        image_type,
+        face_type: 'LIVE',
+      },
+    }),
   };
-  return request(path, init);
+  return await request('/student/faceset/match', option);
 }
 
-export async function searchByFace(image, image_type, group_id) {
-  const path = '/faceset/search';
-  const body = {
-    image,
-    image_type,
-    group_id,
-  };
-  const init = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    body: Object.keys(body)
-      .map(key => {
-        return `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`;
-      })
-      .join('&'),
-  };
-  return request(path, init);
+export async function searchByFace({stu_id, imgUrl}) {
+  const {success: success1, data} = await request(
+    `/student/face?${qs.stringify({stu_id})}`,
+  );
+  console.log(data);
+  const {stu_base64} = data;
+  if (success1) {
+    const {
+      success: success2,
+      data: {score},
+    } = await matchFace({stu_base64, imgUrl});
+    console.log(success2, data);
+    if (success2 && parseInt(score) >= 80) {
+      return {
+        success: true,
+        message: '打卡成功',
+      };
+    } else {
+      return {
+        success: false,
+        message: '打卡失败',
+      };
+    }
+  } else {
+    return {
+      success: false,
+      message: '您的人脸不在人脸库中，请联系管理员进行处理',
+    };
+  }
 }

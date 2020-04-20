@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Container, Text, Button, Content, Icon} from 'native-base';
+import {Content, Icon} from 'native-base';
 import BasicLayout from '../../components/BasicLayout';
 
 export default class Settings extends React.Component {

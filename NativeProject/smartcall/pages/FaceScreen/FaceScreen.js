@@ -1,9 +1,19 @@
 import React, {Component} from 'react';
 import {Platform, NativeModules, NativeEventEmitter} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
-import {Text, Button, Content, List, ListItem, Image, Toast} from 'native-base';
+import {
+  Text,
+  Button,
+  Content,
+  Toast,
+  List,
+  ListItem,
+  CheckBox,
+  Body,
+  Icon,
+} from 'native-base';
 import Geolocation from '@react-native-community/geolocation';
-import {regFace, searchByFace} from './service';
+import {searchByFace} from './service';
 import config from './config/config.js';
 import getDistance from '../../utils/getDistance';
 import moment from 'moment';
@@ -27,19 +37,14 @@ export default class FaceScreen extends Component {
     curLat: 'unknown',
     images: [],
     name: '',
-    mode: 0, //0：人脸采集模式，1: 人脸识别模式
+    distance: 0,
   };
 
   setCurrentUser(currentUser) {
     this.setState({currentUser});
   }
 
-  componentDidMount() {
-    const data = this.props.navigation.state.params.data;
-    const {lat, lng, range_radius, start_time, end_time} = data;
-    NativeModule.addListener('FaceCheckHelper', data =>
-      this.faceCheckCallback(data),
-    );
+  getPosition({lat, lng, range_radius, start_time, end_time}) {
     Geolocation.getCurrentPosition(
       position => {
         var initialPosition = JSON.stringify(position);
@@ -60,22 +65,22 @@ export default class FaceScreen extends Component {
       } = position;
       const distance = getDistance(lat, lng, latitude, longitude);
       const isInTime = moment().isBetween(start_time, end_time);
-      if (distance <= range_radius) {
-        this.setState({
-          curLng: longitude,
-          curLat: latitude,
-          isInTime,
-          isInRange: true,
-        });
-      } else {
-        this.setState({
-          curLng: longitude,
-          curLat: latitude,
-          isInTime,
-          isInRange: false,
-        });
-      }
+      this.setState({
+        curLng: longitude,
+        curLat: latitude,
+        isInTime,
+        isInRange: distance <= range_radius ? true : false,
+        distance,
+      });
     });
+  }
+
+  componentDidMount() {
+    const data = this.props.navigation.state.params.data;
+    NativeModule.addListener('FaceCheckHelper', data =>
+      this.faceCheckCallback(data),
+    );
+    this.getPosition(data);
   }
 
   componentWillUnmount() {
@@ -94,19 +99,8 @@ export default class FaceScreen extends Component {
     */
   faceCheckCallback(data) {
     if (data.remindCode == 0) {
-      let imgs = Object.keys(data.images).map((k, idx) => {
-        return (
-          <Content key={idx}>
-            <Image source={{uri: `data:image/jpg;base64,${data.images[k]}`}} />
-            <Text>{k}</Text>
-          </Content>
-        );
-      });
       let bestImage = data.images['bestImage'];
       this._afterCollectImage(bestImage);
-      this.setState({
-        images: imgs,
-      });
     } else if (data.remindCode == 36) {
       Toast.show({
         text: '采集超时！',
@@ -123,91 +117,41 @@ export default class FaceScreen extends Component {
   }
 
   _afterCollectImage(bestImage) {
-    const {ImgType, Group} = config;
-    if (this.state.mode == 0) {
-      regFace(bestImage, ImgType, Group, this.state.name, {
-        name: this.state.name,
+    searchByFace({stu_id: this.state.currentUser.id, imgUrl: bestImage})
+      .then(({success, message}) => {
+        Toast.show({
+          text: message,
+          buttonText: 'OK',
+          type: success ? 'success' : 'danger',
+        });
+        if (success) {
+          this.navigation.pop();
+        }
       })
-        .then(data => {
-          if (data.error_code == 0) {
-            Toast.show({
-              text: '人脸注册成功',
-              buttonText: 'OK',
-              type: 'success',
-            });
-          } else {
-            Toast.show({
-              text: '人脸注册失败',
-              buttonText: 'OK',
-              type: 'danger',
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } else if (this.state.mode == 1) {
-      searchByFace(bestImage, ImgType, Group)
-        .then(data => {
-          if (data.error_code == 0) {
-            let recSuccess = false;
-            let faceList = data.result.user_list;
-            let successFaces = faceList
-              .map(ele => {
-                return {
-                  ...ele,
-                  user_info: JSON.parse(ele.user_info),
-                };
-              })
-              .filter(ele => {
-                return ele.score > 80 && ele.user_info.name == this.state.name;
-              });
-            recSuccess = successFaces.length > 0 ? true : false;
-            if (recSuccess) {
-              alert(`Welcome ${successFaces[0].user_info.name}！`);
-            } else {
-              alert('没有识别出您的信息，请确认您的人脸已被采集');
-            }
-          } else {
-            alert('人脸识别失败');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+      .catch(err => {
+        console.log(err);
+      });
   }
 
-  _onPressCollection() {
+  _onPressMatch() {
     const {configObj} = config;
-    if (this.state.name) {
-      this.setState({
-        mode: 0,
-      });
-      FaceView.openPushFaceViewController(configObj);
-    } else {
+    if (!true) {
       Toast.show({
-        text: '请输入您的姓名（由字母、数字、下划线组成）',
+        text: '请进入打卡范围后再进行打卡',
         buttonText: 'OK',
-        type: 'warning',
+        type: 'danger',
       });
+      return false;
     }
-  }
-
-  _onPressRecognize() {
-    const {configObj} = config;
-    if (this.state.name) {
-      this.setState({
-        mode: 1,
-      });
-      FaceView.openPushFaceViewController(configObj);
-    } else {
+    if (!true) {
       Toast.show({
-        text: '请输入您的姓名（由字母、数字、下划线组成）',
+        text: '请进入打卡时间后再进行打卡',
         buttonText: 'OK',
-        type: 'warning',
+        type: 'danger',
       });
+      return false;
     }
+    FaceView.openPushFaceViewController(configObj);
   }
 
   render() {
@@ -215,30 +159,74 @@ export default class FaceScreen extends Component {
     return (
       <BasicLayout setCurrentUser={this.setCurrentUser.bind(this)}>
         <Content padder>
-          <Content padder>
-            <Text>
-              考勤地点：（{data.lat}，{data.lng}）
-            </Text>
-            <Text>范围：{data.range_radius}</Text>
-          </Content>
-          <Content>
-            <Text>
-              <Text>当前位置: </Text>({this.state.curLat},{this.state.curLng})
-            </Text>
-          </Content>
-          <Text>是否在考勤范围内：{this.state.isInRange ? '是' : '否'}</Text>
-          <Text>是否在考勤时间段：{this.state.isInTime ? '是' : '否'}</Text>
-          <Text />
-          <Button onPress={this._onPressCollection.bind(this)}>
-            <Text>人脸采集</Text>
-          </Button>
-          <Button onPress={this._onPressRecognize.bind(this)}>
-            <Text>人脸识别</Text>
-          </Button>
-          <List>
-            {this.state.images.map(item => (
-              <ListItem>{item}</ListItem>
-            ))}
+          <List
+            style={{
+              backgroundColor: '#f5f5f5',
+            }}>
+            {this.state.isInRange ? (
+              <ListItem>
+                <Body>
+                  <Text>考勤范围：在范围内</Text>
+                </Body>
+                <Icon
+                  style={{color: 'green'}}
+                  type="AntDesign"
+                  name="checkcircleo"
+                />
+              </ListItem>
+            ) : (
+              <ListItem>
+                <Body>
+                  <Text>
+                    距离考勤范围还差：
+                    <Text style={{color: 'red'}}>
+                      {Math.round(this.state.distance - data.range_radius)}
+                    </Text>
+                    米
+                  </Text>
+                </Body>
+                <Icon
+                  style={{color: 'red'}}
+                  type="AntDesign"
+                  name="closecircleo"
+                />
+              </ListItem>
+            )}
+            {this.state.isInTime ? (
+              <ListItem>
+                <Body>
+                  <Text>考勤时间段：在时间段内</Text>
+                </Body>
+                <Icon
+                  style={{color: 'green'}}
+                  type="AntDesign"
+                  name="checkcircleo"
+                />
+              </ListItem>
+            ) : (
+              <ListItem>
+                <Body>
+                  <Text>
+                    考勤时间段：<Text style={{color: 'red'}}>不在时间段内</Text>
+                  </Text>
+                </Body>
+                <Icon
+                  style={{color: 'red'}}
+                  type="AntDesign"
+                  name="closecircleo"
+                />
+              </ListItem>
+            )}
+            <Button
+              style={{
+                marginTop: 20,
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+              onPress={this._onPressMatch.bind(this)}>
+              <Text>开始打卡</Text>
+            </Button>
           </List>
         </Content>
       </BasicLayout>

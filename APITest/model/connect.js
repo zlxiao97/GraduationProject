@@ -4,7 +4,7 @@ const {
   user,
   password,
   database,
-  port
+  port,
 } = require("../config/database.js");
 
 module.exports = (SQL, cb) => {
@@ -13,9 +13,9 @@ module.exports = (SQL, cb) => {
     user,
     password,
     database,
-    port
+    port,
   });
   connection.connect();
   if (SQL) connection.query(SQL, cb);
-  connection.end;
+  connection.end();
 };
