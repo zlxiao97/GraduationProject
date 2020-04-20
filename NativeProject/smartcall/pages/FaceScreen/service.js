@@ -26,17 +26,18 @@ async function matchFace({stu_base64, imgUrl}) {
 }
 
 export async function searchByFace({stu_id, imgUrl}) {
-  const {success: success1, data} = await request(
-    `/student/face?${qs.stringify({stu_id})}`,
-  );
-  console.log(data);
-  const {stu_base64} = data;
+  const {
+    success: success1,
+    data: {stu_base64},
+  } = await request(`/student/face?${qs.stringify({stu_id})}`);
   if (success1) {
     const {
       success: success2,
-      data: {score},
+      data: {
+        result: {score},
+      },
     } = await matchFace({stu_base64, imgUrl});
-    console.log(success2, data);
+
     if (success2 && parseInt(score) >= 80) {
       return {
         success: true,

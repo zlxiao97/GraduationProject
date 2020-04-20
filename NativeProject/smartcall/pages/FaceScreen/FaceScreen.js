@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, NativeModules, NativeEventEmitter} from 'react-native';
+import {Platform, NativeModules, NativeEventEmitter, Image} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
 import {
   Text,
@@ -8,7 +8,6 @@ import {
   Toast,
   List,
   ListItem,
-  CheckBox,
   Body,
   Icon,
 } from 'native-base';
@@ -35,9 +34,9 @@ export default class FaceScreen extends Component {
     isInTime: false,
     curLng: 'unknown',
     curLat: 'unknown',
-    images: [],
     name: '',
     distance: 0,
+    isCanCompare: false,
   };
 
   setCurrentUser(currentUser) {
@@ -50,13 +49,7 @@ export default class FaceScreen extends Component {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
       },
-      error => {
-        Toast.show({
-          text: error.message,
-          buttonText: 'OK',
-          type: 'danger',
-        });
-      },
+      error => {},
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
     this.watchID = Geolocation.watchPosition(position => {
@@ -99,8 +92,15 @@ export default class FaceScreen extends Component {
     */
   faceCheckCallback(data) {
     if (data.remindCode == 0) {
-      let bestImage = data.images['bestImage'];
-      this._afterCollectImage(bestImage);
+      const bestImage = data.images['bestImage'];
+      if (bestImage) {
+        if (this.state.isCanCompare) {
+          this._afterCollectImage(bestImage);
+        }
+        this.setState({
+          isCanCompare: false,
+        });
+      }
     } else if (data.remindCode == 36) {
       Toast.show({
         text: '采集超时！',
@@ -125,7 +125,7 @@ export default class FaceScreen extends Component {
           type: success ? 'success' : 'danger',
         });
         if (success) {
-          this.navigation.pop();
+          this.props.navigation.pop();
         }
       })
       .catch(err => {
@@ -151,6 +151,9 @@ export default class FaceScreen extends Component {
       });
       return false;
     }
+    this.setState({
+      isCanCompare: true,
+    });
     FaceView.openPushFaceViewController(configObj);
   }
 
