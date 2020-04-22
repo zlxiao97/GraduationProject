@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Icon} from 'native-base';
 import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
@@ -14,7 +14,11 @@ const RouteConfigs = {
       tabBarLabel: '登录',
       tabBarButtonComponent: () => false,
       tabBarIcon: ({focused}) => {
-        return <Icon name="list" />;
+        return focused ? (
+          <Icon name="list" style={{color: '#00BFA0'}} />
+        ) : (
+          <Icon name="list" style={{color: '#8c8c8c'}} />
+        );
       },
     },
   },
@@ -23,7 +27,11 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '课程列表',
       tabBarIcon: ({focused}) => {
-        return <Icon type="FontAwesome" name="list-ul" />;
+        return focused ? (
+          <Icon type="FontAwesome" name="list-ul" style={{color: '#00BFA0'}} />
+        ) : (
+          <Icon type="FontAwesome" name="list-ul" style={{color: '#8c8c8c'}} />
+        );
       },
     },
   },
@@ -32,7 +40,11 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '考勤统计',
       tabBarIcon: ({focused}) => {
-        return <Icon type="Ionicons" name="ios-stats" />;
+        return focused ? (
+          <Icon type="Ionicons" name="ios-stats" style={{color: '#00BFA0'}} />
+        ) : (
+          <Icon type="Ionicons" name="ios-stats" style={{color: '#8c8c8c'}} />
+        );
       },
     },
   },
@@ -41,7 +53,11 @@ const RouteConfigs = {
     navigationOptions: {
       tabBarLabel: '设置',
       tabBarIcon: ({focused}) => {
-        return <Icon type="AntDesign" name="setting" />;
+        return focused ? (
+          <Icon type="AntDesign" name="setting" style={{color: '#00BFA0'}} />
+        ) : (
+          <Icon type="AntDesign" name="setting" style={{color: '#8c8c8c'}} />
+        );
       },
     },
   },
