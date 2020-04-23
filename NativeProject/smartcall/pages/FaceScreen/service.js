@@ -25,7 +25,38 @@ async function matchFace({stu_base64, imgUrl}) {
   return await request('/student/faceset/match', option);
 }
 
-export async function searchByFace({stu_id, imgUrl}) {
+async function addRecord({
+  lesson_id,
+  stu_id,
+  attendance_time,
+  attendance_lat,
+  attendance_lng,
+  attendance_status = 0,
+}) {
+  return request('/student/record', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      lesson_id,
+      stu_id,
+      attendance_time,
+      attendance_lat,
+      attendance_lng,
+      attendance_status,
+    }),
+  });
+}
+
+export async function searchByFace({
+  stu_id,
+  imgUrl,
+  lesson_id,
+  attendance_time,
+  attendance_lat,
+  attendance_lng,
+}) {
   const {
     success: success1,
     data: {stu_base64},
@@ -37,22 +68,29 @@ export async function searchByFace({stu_id, imgUrl}) {
         result: {score},
       },
     } = await matchFace({stu_base64, imgUrl});
-
     if (success2 && parseInt(score) >= 80) {
-      return {
-        success: true,
-        message: '打卡成功',
-      };
-    } else {
-      return {
-        success: false,
-        message: '打卡失败',
-      };
+      const {success, message} = await addRecord({
+        lesson_id,
+        stu_id,
+        attendance_time,
+        attendance_lat,
+        attendance_lng,
+      });
+      console.log(success, message);
+      if (success) {
+        return {
+          success: true,
+          message: '打卡成功',
+        };
+      }
     }
-  } else {
     return {
       success: false,
-      message: '您的人脸不在人脸库中，请联系管理员进行处理',
+      message: '打卡失败',
     };
   }
+  return {
+    success: false,
+    message: '您的人脸不在人脸库中，请联系管理员进行处理',
+  };
 }

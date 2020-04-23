@@ -12,33 +12,50 @@ import {
 import BasicLayout from '../../components/BasicLayout';
 import StudentCard from './components/StudentCard';
 import moment from 'moment';
+import {query} from './service';
+
+const defaultDate = {
+  begin: moment()
+    .startOf('month')
+    .valueOf(),
+  end: moment()
+    .startOf('month')
+    .valueOf(),
+};
 export default class ResetPwd extends React.Component {
   static navigationOptions = {
     title: '考勤统计',
   };
   state = {
     currentUser: null,
-    start: moment()
-      .startOf('month')
-      .valueOf(),
-    end: moment()
-      .startOf('month')
-      .valueOf(),
+    data: [],
   };
 
   setCurrentUser(currentUser) {
+    const {begin, end} = defaultDate;
+    query({stu_id: currentUser.id, begin, end}).then(({success, data}) => {
+      if (success) {
+        this.setState({data});
+      }
+    });
     console.log(currentUser);
     this.setState({currentUser});
   }
 
   setDate(date) {
-    const start = moment(date)
+    const begin = moment(date)
       .startOf('month')
       .valueOf();
     const end = moment(date)
       .endOf('month')
       .valueOf();
-    this.setState({start, end});
+    query({stu_id: this.state.MathcurrentUser.id, begin, end}).then(
+      ({success, data}) => {
+        if (success) {
+          this.setState({data});
+        }
+      },
+    );
   }
 
   render() {

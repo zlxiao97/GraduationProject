@@ -46,9 +46,7 @@ export default class ClassList extends React.Component {
               leading: true,
               trailing: false,
             })}
-            selected={moment()
-              .subtract(1, 'days')
-              .format('YYYY-MM-DD')}
+            selected={moment().format('YYYY-MM-DD')}
             renderItem={this.renderItem.bind(this)}
             renderEmptyDate={this.renderEmptyDate.bind(this)}
             rowHasChanged={this.rowHasChanged.bind(this)}

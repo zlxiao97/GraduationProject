@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {Platform, NativeModules, NativeEventEmitter, Image} from 'react-native';
+import {
+  Platform,
+  NativeModules,
+  NativeEventEmitter,
+  PermissionsAndroid,
+} from 'react-native';
 import BasicLayout from '../../components/BasicLayout';
 import {
   Text,
@@ -23,6 +28,27 @@ const FaceCheckHelper = Platform.select({
 });
 const NativeModule = new NativeEventEmitter(FaceCheckHelper);
 
+async function requestLocationPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message:
+          'This App needs access to your location ' +
+          'so we can know where you are.',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    } else {
+      throw new Error('定位权限请求失败');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
 export default class FaceScreen extends Component {
   static navigationOptions = {
     title: '开始打卡',
@@ -44,28 +70,50 @@ export default class FaceScreen extends Component {
   }
 
   getPosition({lat, lng, range_radius, start_time, end_time}) {
-    Geolocation.getCurrentPosition(
-      position => {
-        var initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
-      },
-      error => {},
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-    this.watchID = Geolocation.watchPosition(position => {
-      const {
-        coords: {longitude, latitude},
-      } = position;
-      const distance = getDistance(lat, lng, latitude, longitude);
-      const isInTime = moment().isBetween(start_time, end_time);
-      this.setState({
-        curLng: longitude,
-        curLat: latitude,
-        isInTime,
-        isInRange: distance <= range_radius ? true : false,
-        distance,
+    requestLocationPermission()
+      .then(() => {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {
+              coords: {longitude, latitude},
+            } = position;
+            const distance = getDistance(lat, lng, latitude, longitude);
+            const isInTime = moment().isBetween(start_time, end_time);
+            this.setState({
+              curLng: longitude,
+              curLat: latitude,
+              isInTime,
+              isInRange: distance <= range_radius ? true : false,
+              distance,
+            });
+          },
+          error => {
+            console.log(error);
+          },
+          {enableHighAccuracy: true, timeout: 2000},
+        );
+        this.watchID = Geolocation.watchPosition(position => {
+          const {
+            coords: {longitude, latitude},
+          } = position;
+          const distance = getDistance(lat, lng, latitude, longitude);
+          const isInTime = moment().isBetween(start_time, end_time);
+          this.setState({
+            curLng: longitude,
+            curLat: latitude,
+            isInTime,
+            isInRange: distance <= range_radius ? true : false,
+            distance,
+          });
+        });
+      })
+      .catch(err => {
+        Toast.show({
+          text: err,
+          buttonText: 'OK',
+          type: 'danger',
+        });
       });
-    });
   }
 
   componentDidMount() {
@@ -117,7 +165,15 @@ export default class FaceScreen extends Component {
   }
 
   _afterCollectImage(bestImage) {
-    searchByFace({stu_id: this.state.currentUser.id, imgUrl: bestImage})
+    const {lesson_id} = this.props.navigation.state.params.data;
+    searchByFace({
+      stu_id: this.state.currentUser.id,
+      imgUrl: bestImage,
+      lesson_id,
+      attendance_time: moment().valueOf(),
+      attendance_lat: this.state.curLat,
+      attendance_lng: this.state.curLng,
+    })
       .then(({success, message}) => {
         Toast.show({
           text: message,
@@ -129,7 +185,7 @@ export default class FaceScreen extends Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
       });
   }
 

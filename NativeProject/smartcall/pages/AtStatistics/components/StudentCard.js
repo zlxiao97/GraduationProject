@@ -70,11 +70,32 @@ export default class ClassCard extends PureComponent {
             />
           </Right>
         </CardItem>
-        <CardItem cardBody>
-          <Image
-            source={{uri: 'Image URL'}}
-            style={{height: 200, width: null, flex: 1}}
-          />
+        <CardItem cardBody style={{marginHorizontal: 50, color: '#d3d3d3'}}>
+          <Left>
+            <Text
+              style={{
+                fontSize: 18,
+              }}>
+              缺勤：
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 24,
+                  color: '#B8000F',
+                }}>
+                0
+              </Text>
+            </Text>
+          </Left>
+          <Right>
+            <Text style={{fontSize: 18}}>
+              出勤：
+              <Text
+                style={{fontWeight: 'bold', fontSize: 24, color: '#00AC2D'}}>
+                1
+              </Text>
+            </Text>
+          </Right>
         </CardItem>
         <CardItem>
           <Left>
