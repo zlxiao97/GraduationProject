@@ -88,7 +88,12 @@ export default class FaceScreen extends Component {
             });
           },
           error => {
-            console.log(error);
+            Toast.show({
+              text: '请检查您的手机是否打开了位置信息按钮',
+              buttonText: 'OK',
+              type: 'danger',
+              duration: 5000,
+            });
           },
           {enableHighAccuracy: true, timeout: 2000},
         );
@@ -239,7 +244,9 @@ export default class FaceScreen extends Component {
                   <Text>
                     距离考勤范围还差：
                     <Text style={{color: 'red'}}>
-                      {Math.round(this.state.distance - data.range_radius)}
+                      {this.state.distance !== 0
+                        ? Math.round(this.state.distance - data.range_radius)
+                        : '∞'}
                     </Text>
                     米
                   </Text>

@@ -1,25 +1,19 @@
 import * as React from 'react';
-import {
-  Content,
-  Card,
-  CardItem,
-  Text,
-  Button,
-  Left,
-  Body,
-  Right,
-} from 'native-base';
+import {Content, Card, CardItem, Text, Grid} from 'native-base';
 import BasicLayout from '../../components/BasicLayout';
+import TableRow from './components/TableRow';
 import StudentCard from './components/StudentCard';
 import moment from 'moment';
 import {query} from './service';
+import resolve from './utils/resolve';
+import normalize from './utils/normalize';
 
 const defaultDate = {
   begin: moment()
     .startOf('month')
     .valueOf(),
   end: moment()
-    .startOf('month')
+    .endOf('month')
     .valueOf(),
 };
 export default class ResetPwd extends React.Component {
@@ -38,7 +32,6 @@ export default class ResetPwd extends React.Component {
         this.setState({data});
       }
     });
-    console.log(currentUser);
     this.setState({currentUser});
   }
 
@@ -49,7 +42,7 @@ export default class ResetPwd extends React.Component {
     const end = moment(date)
       .endOf('month')
       .valueOf();
-    query({stu_id: this.state.MathcurrentUser.id, begin, end}).then(
+    query({stu_id: this.state.currentUser.id, begin, end}).then(
       ({success, data}) => {
         if (success) {
           this.setState({data});
@@ -73,8 +66,30 @@ export default class ResetPwd extends React.Component {
               getBg,
               currentUser: this.state.currentUser,
               onDateChange: this.setDate.bind(this),
+              ...resolve(this.state.data),
             }}
           />
+          <Card>
+            <CardItem>
+              <Text
+                style={{
+                  fontSize: 26,
+                  fontWeight: 'bold',
+                  width: '100%',
+                  textAlign: 'center',
+                }}>
+                缺勤记录
+              </Text>
+            </CardItem>
+            <CardItem>
+              <Grid style={{flexDirection: 'column'}}>
+                <TableRow left="课程" right="时间" />
+                {normalize(this.state.data).map(rows => (
+                  <TableRow {...rows} />
+                ))}
+              </Grid>
+            </CardItem>
+          </Card>
         </Content>
       </BasicLayout>
     );

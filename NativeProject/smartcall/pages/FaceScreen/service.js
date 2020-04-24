@@ -69,24 +69,27 @@ export async function searchByFace({
       },
     } = await matchFace({stu_base64, imgUrl});
     if (success2 && parseInt(score) >= 80) {
-      const {success, message} = await addRecord({
+      const {success} = await addRecord({
         lesson_id,
         stu_id,
         attendance_time,
         attendance_lat,
         attendance_lng,
       });
-      console.log(success, message);
       if (success) {
         return {
           success: true,
           message: '打卡成功',
         };
       }
+      return {
+        success: false,
+        message: '服务器错误',
+      };
     }
     return {
       success: false,
-      message: '打卡失败',
+      message: '人脸匹配失败',
     };
   }
   return {

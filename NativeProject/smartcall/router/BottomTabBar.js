@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {Icon} from 'native-base';
 import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
@@ -76,10 +75,3 @@ const TabNavigatorConfig = {
 };
 
 export default createBottomTabNavigator(RouteConfigs, TabNavigatorConfig);
-
-const styles = StyleSheet.create({
-  BottomTabBarItem: {
-    width: 30,
-    height: 30,
-  },
-});

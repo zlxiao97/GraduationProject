@@ -10,7 +10,6 @@ import {
   Right,
   DatePicker,
 } from 'native-base';
-import {Image} from 'react-native';
 import TextAvatar from 'react-native-text-avatar';
 import moment from 'moment';
 
@@ -20,9 +19,9 @@ export default class ClassCard extends PureComponent {
   }
 
   render() {
-    const {getBg, currentUser, onDateChange} = this.props;
+    const {getBg, currentUser, onDateChange, atCount, abCount} = this.props;
     return (
-      <Card>
+      <Card style={{paddingBottom: 30}}>
         <CardItem>
           <Left>
             <TextAvatar
@@ -50,11 +49,11 @@ export default class ClassCard extends PureComponent {
                 .toDate()}
               minimumDate={moment()
                 .startOf('month')
-                .subtract(6, 'M')
+                .subtract(1, 'Y')
                 .toDate()}
               maximumDate={moment()
                 .startOf('month')
-                .add(6, 'M')
+                .add(1, 'Y')
                 .toDate()}
               formatChosenDate={this.formatChosenDate.bind(this)}
               locale={'zh-CN'}
@@ -83,7 +82,7 @@ export default class ClassCard extends PureComponent {
                   fontSize: 24,
                   color: '#B8000F',
                 }}>
-                0
+                {abCount}
               </Text>
             </Text>
           </Left>
@@ -92,26 +91,9 @@ export default class ClassCard extends PureComponent {
               出勤：
               <Text
                 style={{fontWeight: 'bold', fontSize: 24, color: '#00AC2D'}}>
-                1
+                {atCount}
               </Text>
             </Text>
-          </Right>
-        </CardItem>
-        <CardItem>
-          <Left>
-            <Button transparent>
-              <Icon active name="thumbs-up" />
-              <Text>12 Likes</Text>
-            </Button>
-          </Left>
-          <Body>
-            <Button transparent>
-              <Icon active name="chatbubbles" />
-              <Text>4 Comments</Text>
-            </Button>
-          </Body>
-          <Right>
-            <Text>11h ago</Text>
           </Right>
         </CardItem>
       </Card>
