@@ -12,12 +12,13 @@ const bodyParser = require("body-parser");
 const PORT = 3000;
 const KEY = require("./utils/init.js");
 const router = require("./router/index.js");
+const setSchedule = require("./schedule/schedule.js");
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.all("*", function(req, res, next) {
+app.all("*", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -34,12 +35,14 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(
   bodyParser.urlencoded({
     extended: true,
-    limit: "10mb"
+    limit: "10mb",
   })
 );
 
 app.use("/", router(KEY));
+setSchedule();
 
 app.listen(PORT, () => {
   console.log(`listening at port ${PORT}`);
 });
+
