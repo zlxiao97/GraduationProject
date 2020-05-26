@@ -3,11 +3,12 @@ import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { connect } from 'dva';
-import CreateForm from './components/CreateForm';
 import data2ExcelJson from '@/utils/excel/data2ExcelJson';
 import exportJson2Sheet from '@/utils/excel/exportJson2Sheet';
+import CreateForm from './components/CreateForm';
 import { columns } from './config/col-config-list';
 import { queryRule, queryStudents, remove, add } from './service';
+
 const { Option } = Select;
 const { Text } = Typography;
 const { Search } = Input;
@@ -114,9 +115,9 @@ const TableList = ({
           type="primary"
           onClick={() => {
             const body = data2ExcelJson(datasource, columns);
-            const headerOrder = ['规则名称', '描述', '服务调用次数', '状态', '上次调度时间'];
-            const sheetname = '范例报表';
-            const filename = '范例报表';
+            const headerOrder = ['学生账号','学生名称'];
+            const sheetname = '学生名单';
+            const filename = '学生名单';
             return exportJson2Sheet(body, headerOrder, sheetname, filename);
           }}
         >
@@ -175,7 +176,7 @@ const TableList = ({
               <>
                 <a
                   onClick={async () => {
-                    await handleRemove(record['s2c_id']);
+                    await handleRemove(record.s2c_id);
                     localAction.resetPageIndex(1);
                     localAction.reload();
                   }}

@@ -8,6 +8,7 @@ import exportJson2Sheet from '@/utils/excel/exportJson2Sheet';
 import uuid from '@/utils/uuid';
 import { columns } from './config/col-config-list';
 import { queryRule, queryLessons, updateAtStatus } from './service';
+
 const { Option } = Select;
 const { Text } = Typography;
 const { Search } = Input;
@@ -68,9 +69,9 @@ const TableList = ({ curCourse }) => {
           type="primary"
           onClick={() => {
             const body = data2ExcelJson(datasource, columns);
-            const headerOrder = ['规则名称', '描述', '服务调用次数', '状态', '上次调度时间'];
-            const sheetname = '范例报表';
-            const filename = '范例报表';
+            const headerOrder = ['学生编号','学生名称','功课编号','功课名称','考勤日期','开始时间','结束时间','考勤状态'];
+            const sheetname = '考勤记录';
+            const filename = '考勤记录';
             return exportJson2Sheet(body, headerOrder, sheetname, filename);
           }}
         >
