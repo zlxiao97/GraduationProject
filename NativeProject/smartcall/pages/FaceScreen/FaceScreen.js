@@ -15,6 +15,7 @@ import {
   ListItem,
   Body,
   Icon,
+  Spinner,
 } from 'native-base';
 import Geolocation from '@react-native-community/geolocation';
 import {searchByFace} from './service';
@@ -63,6 +64,7 @@ export default class FaceScreen extends Component {
     name: '',
     distance: 0,
     isCanCompare: false,
+    isLoading: false,
   };
 
   setCurrentUser(currentUser) {
@@ -171,6 +173,7 @@ export default class FaceScreen extends Component {
 
   _afterCollectImage(bestImage) {
     const {lesson_id} = this.props.navigation.state.params.data;
+    this.setState({isLoading: true});
     searchByFace({
       stu_id: this.state.currentUser.id,
       imgUrl: bestImage,
@@ -180,6 +183,7 @@ export default class FaceScreen extends Component {
       attendance_lng: this.state.curLng,
     })
       .then(({success, message}) => {
+        this.setState({isLoading: false});
         Toast.show({
           text: message,
           buttonText: 'OK',
@@ -194,9 +198,16 @@ export default class FaceScreen extends Component {
       });
   }
 
-  _onPressMatch() {
+  _match() {
     const {configObj} = config;
-    if (!true) {
+    this.setState({
+      isCanCompare: true,
+    });
+    FaceView.openPushFaceViewController(configObj);
+  }
+
+  _onPressMatch() {
+    if (!this.isInRange) {
       Toast.show({
         text: '请进入打卡范围后再进行打卡',
         buttonText: 'OK',
@@ -204,7 +215,7 @@ export default class FaceScreen extends Component {
       });
       return false;
     }
-    if (!true) {
+    if (!this.sisInTime) {
       Toast.show({
         text: '请进入打卡时间后再进行打卡',
         buttonText: 'OK',
@@ -212,10 +223,7 @@ export default class FaceScreen extends Component {
       });
       return false;
     }
-    this.setState({
-      isCanCompare: true,
-    });
-    FaceView.openPushFaceViewController(configObj);
+    this._match();
   }
 
   render() {
@@ -293,7 +301,18 @@ export default class FaceScreen extends Component {
               onPress={this._onPressMatch.bind(this)}>
               <Text>开始打卡</Text>
             </Button>
+            <Button
+              style={{
+                marginTop: 20,
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+              onPress={this._match.bind(this)}>
+              <Text>测试按钮</Text>
+            </Button>
           </List>
+          {this.isLoading ? <Spinner /> : null}
         </Content>
       </BasicLayout>
     );
