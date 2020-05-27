@@ -117,5 +117,5 @@ const main = (fireDate) => {
 };
 
 module.exports = () => {
-  schedule.scheduleJob("0 0 6 * * ?", main);
+  schedule.scheduleJob("0 0 9 * * ?", main);
 };
