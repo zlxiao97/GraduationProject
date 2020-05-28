@@ -207,7 +207,7 @@ export default class FaceScreen extends Component {
   }
 
   _onPressMatch() {
-    if (!this.isInRange) {
+    if (!this.state.isInRange) {
       Toast.show({
         text: '请进入打卡范围后再进行打卡',
         buttonText: 'OK',
@@ -215,7 +215,7 @@ export default class FaceScreen extends Component {
       });
       return false;
     }
-    if (!this.sisInTime) {
+    if (!this.state.isInTime) {
       Toast.show({
         text: '请进入打卡时间后再进行打卡',
         buttonText: 'OK',
