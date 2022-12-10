@@ -16,7 +16,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "native-base": "^2.13.12",
-    "qs": "^6.9.3",
+    "qs": "^6.9.7",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-calendars": "^1.264.0",
